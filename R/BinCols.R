@@ -17,3 +17,6 @@ BinCols <- function(x, increment = 0.01){
   output <- list(prob.values, y.values, binary.cols)
   names(output) <- c("prob.values", "y.values", "columns")
   return(output)}
+
+
+# test test test
