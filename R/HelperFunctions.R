@@ -1,4 +1,4 @@
-#' Binary columns function
+#' Extract best model predictions
 #'
 #' This function transforms a continuous target vector into a series of binary target vectors
 #' @param model The column to be binarized
