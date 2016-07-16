@@ -1,13 +1,8 @@
 #' Extract Model Information
 #'
-#' This function trains a list of local expert (level 0) models on a binary response matrix.
-#' @param x The feature matrix
-#' @param bincols Binary target matrix created with 'BinCols()' function
-#' @param trControl Optional argument to specify a train control object- defaults to cross validated
-#' @param n.repeats Number of repeats if default train control object is used- defaults to 10
-#' @param method Type of learning algorithm used for induction- defaults to linear model
-#' @param ... Additional parameters to pass to model training function
-#' @keywords train
+#' This function extracts the performance information and best predictions from a model list
+#' @param model.list List of models trained using the TrainLEs function
+#' @keywords model, predictions, train
 #' @export
 #' @examples
 #'

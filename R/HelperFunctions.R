@@ -1,17 +1,11 @@
 #' Extract best model predictions
 #'
-#' This function transforms a continuous target vector into a series of binary target vectors
-#' @param model The column to be binarized
-#' @param n The number of columns in the resulting binary matrix
-#' @param mode Defaults to 'EW' intervals, but 'EP' is also available
-#' @keywords binary
+#' Extracts best predictions from each resample from cv data
+#' @param model The model to extract predictions from
+#' @keywords
 #' @export
-#' @examples
-#' y <- runif(1000, 0, 200)
-#' BinCols(y, n = 50, mode = 'EP')
 #'
 
-# function to pull prediction probs,
 ExtractBestPreds <- function(model){
   best.pred.key <- data.table(model$bestTune, key = names(model$bestTune)) # save this
   all.preds <- data.table(model$pred, key = names(model$bestTune))
@@ -19,35 +13,83 @@ ExtractBestPreds <- function(model){
   setorderv(best.pred, c("rowIndex", "Resample"))
   return(best.pred)}
 
+#' Extract probabilities from class estimation predictions
+#'
+#' Extracts the probability that instances will be less than the target value
+#' @param model The model to extract probabilities from
+#' @keywords
+#' @export
+#'
+
 ExtractDownProbs <- function(model){
   down.probs <- model$DOWN
   return(down.probs)}
 
-# function to pull model performance
+#' Extract model performance
+#'
+#' Extracts all performance data from best model
+#' @param model The model to extract performance from
+#' @keywords
+#' @export
+#'
+
 ExtractPerformance <- function(model){
   best.pred.key <- data.table(model$bestTune, key = names(model$bestTune))
   results.table <- data.table(model$results, key = names(model$bestTune))
   results.table <- results.table[best.pred.key, ] # save this
   return(results.table)}
 
-# get all Kappas
+#' Extract model kappa
+#'
+#' Extracts kappa from best model performance
+#' @param model The model to extract kappa from
+#' @keywords
+#' @export
+#'
+
 ExtractKappa <- function(model){
   Kappa <- model$Kappa
   return(Kappa)}
+
+#' Extract model accuracy
+#'
+#' Extracts accuracy from best model performance
+#' @param model The model to extract accuracy from
+#' @keywords
+#' @export
+#'
 
 ExtractAccuracy <- function(model){
   Accuracy <- model$Accuracy
   return(Accuracy)}
 
+#' Extract model accuracy standard deviation
+#'
+#' Extracts accuracy standard deviation of resamples from best model performance
+#' @param model The model to extract accuracy SD from
+#' @keywords
+#' @export
+#'
+
 ExtractAccuracySD <- function(model){
   AccuracySD <- model$AccuracySD
   return(AccuracySD)}
+
+#' Extract model kappa standard deviation
+#'
+#' Extracts kappa standard deviation of resamples from best model performance
+#' @param model The model to extract kappa SD from
+#' @keywords
+#' @export
+#'
 
 ExtractKappaSD <- function(model){
   KappaSD <- model$KappaSD
   return(KappaSD)}
 
-# function to calculate variable importance
-ExtractVarImp <- function(model){
-  importance <- varImp(model)$importance$Overall
-  return(importance)}
+
+
+# function to calculate variable importance- TODO: validate VARIMP capability of base learner
+# ExtractVarImp <- function(model){
+#  importance <- varImp(model)$importance$Overall
+#  return(importance)}
