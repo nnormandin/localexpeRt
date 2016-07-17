@@ -4,18 +4,23 @@
 \alias{BinCols}
 \title{Binary columns function}
 \usage{
-BinCols(x, increment = 0.01)
+BinCols(x, n = 30, mode = "EW", EW.buffer = 0.01)
 }
 \arguments{
 \item{x}{The column to be binarized}
 
-\item{increment}{The increment for Equally Probable intervals, defaults to 0.01}
+\item{n}{The number of columns in the resulting binary matrix}
+
+\item{mode}{Defaults to 'EW' intervals, but 'EP' is also available}
+
+\item{EW.buffer}{Defaults to 0.01, only for EW testing; excludes outliers from width}
 }
 \description{
 This function transforms a continuous target vector into a series of binary target vectors
 }
 \examples{
-BinCols(trainingY, increment = 0.02)
+y <- runif(1000, 0, 200)
+BinCols(y, n = 15, mode = 'EP')
 
 }
 \keyword{binary}
