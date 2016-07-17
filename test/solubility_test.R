@@ -34,4 +34,6 @@ model.list <- TrainLEs(x, y.cols$cols, method = "svmLinear")
 # examine ensemble performance by extracting all model info
 model.info <- ExtractModelInfo(model.list)
 
-# TODO: useful quick plots
+# plot the model information
+PlotLEs(model.info)
+
