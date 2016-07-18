@@ -11,7 +11,8 @@ x <- solTrainXtrans
 y <- solTrainY
 
 # examine data
-dim(x) # 951 instances with 228 features - use summary(x) to examine features
+dim(x) # 951 instances with 228 features
+glimpse(x) # use glimpse(x) to look at feature types
 
 # locate NA values
 sum(sapply(x, function(x) sum(is.na(x)))) # no NA values, ok to proceed
