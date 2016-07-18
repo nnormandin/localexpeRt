@@ -5,6 +5,9 @@ Authors@R: person("Nicholas", "Normandin", email = "nicholas.e.normandin@gmail.c
 Description: What the package does (one paragraph).
 Depends:
     R (>= 3.1.3),
+	caret,
+	data.table,
+	PerformanceAnalytics
 License: GNU
 LazyData: true
 RoxygenNote: 5.0.1.9000
