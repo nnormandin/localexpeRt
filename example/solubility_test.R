@@ -22,7 +22,7 @@ hist(y, main = '', xlab = 'Solubility') #  ok to proceed
 
 # convert the response into binary columns
 # use equally probable width, output 20 columns
-y.cols <- BinCols(y, n = 20, mode = 'EP')
+y.cols <- BinCols(y, n = 5, mode = 'EP')
 
 # examine breakpoints over histogram of response
 hist(y, main = '', xlab = 'Solubility')

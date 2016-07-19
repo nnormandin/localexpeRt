@@ -1,18 +1,18 @@
 #' Fit a CDF to a row of local expert predictions
 #'
 #' Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
-#' @param row
-#' @param y.vals
-#' @param granularity
-#' @param df
-#' @param
-#' @keywords plot
+#' @param row Vector of LE predictions
+#' @param y.vals Y-values from BinCols function
+#' @param granularity Number of interpolation points in fitting; defaults to 100
+#' @param df Degrees of freedom in smoothing spline; defaults to 10
+#' @param mode Choose whether probability output is
+#' @keywords smooth
 #' @export
 #' @examples
 #'
 
 
-FitCDF <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF') {
+FitInstance <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF') {
 
   # first fit a spline to the predictions to make a smoothed ECDF
   smooth <- smooth.spline(y = row, x = y.values, df = df)
