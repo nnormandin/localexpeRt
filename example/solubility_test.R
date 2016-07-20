@@ -22,7 +22,7 @@ hist(y, main = '', xlab = 'Solubility') #  ok to proceed
 
 # convert the response into binary columns
 # use equally probable width, output 20 columns
-y.cols <- BinCols(y, n = 5, mode = 'EP')
+y.cols <- BinCols(y, n = 15, mode = 'EP')
 
 # examine breakpoints over histogram of response
 hist(y, main = '', xlab = 'Solubility')
@@ -37,4 +37,15 @@ model.info <- ExtractModelInfo(model.list)
 
 # plot the model information
 PlotLEs(model.info)
+
+# examine the fit of a random instance
+instance.id <- sample(seq(1, nrow(model.info$preds.matrix)),1)
+instance.check <- FitInstance(model.info$preds.matrix[instance.id,], y.values = y.cols$y.vals,
+                              mode = 'PDF', plot = TRUE)
+
+# fit every instance
+LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
+
+
+
 
