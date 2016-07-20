@@ -11,11 +11,33 @@
 #'
 
 FitMatrix <- function(preds.matrix, y.values, sample.points = FALSE, ...){
-  meta.rows <- apply(preds.matrix, 1, FitInstance, y.values = y.values)
-  meta.rows <- as.data.frame(do.call(rbind, meta.rows))
-  dist.rows <- do.call(rbind, meta.rows[,1])
-  out <- as.data.frame(c(dist.rows, meta.rows[,1:length(meta.rows)]))
 
-  samp.rows <- do.call(rbind, meta.rows[,2])
-  return(meta.rows)
+  # apply fitting function row wise to every instance in LE predictions
+  meta.rows <- apply(preds.matrix, 1, FitInstance, y.values = y.values, ...)
+
+  # bind the list of output
+  meta.rows <- as.data.frame(do.call(rbind, meta.rows))
+
+  # collapse the first column of lists into a data table and rename
+  dist.rows <- do.call(rbind, meta.rows[,1])
+  cnames <- paste("c", seq(1, ncol(dist.rows)), sep = '')
+
+  # combine distribution estimate with moments
+  out <- as.data.frame(cbind(dist.rows, meta.rows$mean, meta.rows$var,
+                             meta.rows$skew, meta.rows$kurtosis))
+
+  # rename output
+  names(out) <- c(cnames, "mean", "var", "skewness", "kurtosis")
+
+  if(sample.points == FALSE){
+    return(out)
+  }
+  else
+  {
+    samp.rows <- do.call(rbind, meta.rows[,2])
+    names(samp.rows) <- paste("s", seq(1, ncol(samp.rows)), sep = '')
+    out <- list(samp.rows, out)
+    names(out) <- c("sample.rows", "output")
+    return(out)
+  }
 }
