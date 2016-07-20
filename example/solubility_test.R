@@ -22,7 +22,7 @@ hist(y, main = '', xlab = 'Solubility') #  ok to proceed
 
 # convert the response into binary columns
 # use equally probable width, output 20 columns
-y.cols <- BinCols(y, n = 15, mode = 'EP')
+y.cols <- BinCols(y, n = 30, mode = 'EP')
 
 # examine breakpoints over histogram of response
 hist(y, main = '', xlab = 'Solubility')
@@ -30,7 +30,7 @@ abline(v = y.cols$y.vals)
 
 # train Local Experts on each of the binary columns
 # use default train control object with Support Vector Machines algorithm and linear kernel
-model.list <- TrainLEs(x, y.cols$cols, method = "svmLinear")
+model.list <- TrainLEs(x, y.cols$cols, method = 'gbm')
 
 # examine ensemble performance by extracting all model info
 model.info <- ExtractModelInfo(model.list)
@@ -46,6 +46,14 @@ instance.check <- FitInstance(model.info$preds.matrix[instance.id,], y.values = 
 # fit every instance
 LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
 
+# create meta feature input matrix for stacked regression model
+meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean, LE.fits$var))
+meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
+cnames <- c(paste0('c', seq(1, 15)), 'mean', 'var')
 
+# test a regression model
+trControl <- trainControl(method = "cv", number = 10,
+                          returnData = FALSE,
+                          savePredictions = TRUE)
 
-
+L1.model <- train(x = meta.x, y = y, method = 'gbm')
