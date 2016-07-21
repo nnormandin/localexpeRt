@@ -52,8 +52,11 @@ meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
 cnames <- c(paste0('c', seq(1, 15)), 'mean', 'var')
 
 # test a regression model
+# create train control object
 trControl <- trainControl(method = "cv", number = 10,
                           returnData = FALSE,
                           savePredictions = TRUE)
 
+# create stacked model
 L1.model <- train(x = meta.x, y = y, method = 'gbm')
+
