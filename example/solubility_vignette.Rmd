@@ -1,0 +1,20 @@
+---
+title: "localexpeRt"
+author: "Nicholas Normandin"
+#date: "July 23, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Method
+
+## Data
+
+## Training local experts
+
+## Building a stacked regression model
+
+## Using the ensemble
