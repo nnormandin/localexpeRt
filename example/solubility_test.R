@@ -47,9 +47,10 @@ instance.check <- FitInstance(model.info$preds.matrix[instance.id,], y.values = 
 LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
 
 # create meta feature input matrix for stacked regression model
-meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean, LE.fits$var))
+meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean))
 meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
-cnames <- c(paste0('c', seq(1, 15)), 'mean', 'var')
+cnames <- c(paste0('c', seq(1, 15)), 'mean')
+names(meta.x) <- cnames
 
 # test a regression model
 # create train control object

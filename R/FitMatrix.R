@@ -40,4 +40,6 @@ FitMatrix <- function(preds.matrix, y.values, sample.points = FALSE, ...){
     names(out) <- c("sample.rows", "output")
     return(out)
   }
+
+  ## TODO: save features as numeric prior to output
 }
