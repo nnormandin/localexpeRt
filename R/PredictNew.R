@@ -21,17 +21,12 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
                        plot = FALSE, verbose = FALSE, ...){
 
   # 1) pass x vector through all LEs to get prediction
-  PredictProb <- function(x, model){
-    pred <- predict(model, newdata = x, type = 'prob')
-    out <- pred$DOWN
-    return(out)
-  }
 
-  LE.preds <- sapply(model.list, PredictProb, x = x)
+  LE.preds <- PredictLEs(x, LE.model.list)
 
   # 2) input LE prediction vector into FitInstance function
 
-  instance.fit <- FitInstance(row = x, y.values = y.vals, mode = mode, ...)
+  instance.fit <- FitInstance(row = LE.preds, y.values = y.vals, mode = mode, ...)
 
 ## TODO: detect meta features automatically by looking at variables in stacked model!!
 
@@ -60,3 +55,4 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
   # 5) output point prediction, LE predictions, var
   # 6) output plot w/ lines at distribution mean and stacked prediction
 }
+
