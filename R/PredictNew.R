@@ -11,7 +11,7 @@
 #' @param skewness Whether to include skewness in stacked model
 #' @param kurtosis Whether to include kurtosis in stacked model
 #' @param plot Display plot of LE predictions and stack estimate
-#' @keywords
+#' @keywords predict
 #' @export
 #' @examples
 #'
@@ -32,19 +32,19 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
 
   # 3) cbind meta features depending on user parameter choices
 
-  if(mean = TRUE){
+  if(mean == TRUE){
     LE.preds <- c(LE.preds, instance.fit$mean)
   }
 
-  if(var = TRUE){
+  if(var == TRUE){
     LE.preds <- c(LE.preds, instance.fit$var)
   }
 
-  if(skewness = TRUE){
+  if(skewness == TRUE){
     LE.preds <- c(LE.preds, instance.fit$skew)
   }
 
-  if(kurtosis = TRUE){
+  if(kurtosis == TRUE){
     LE.preds <- c(LE.preds, instance.fit$kurtosis)
   }
 

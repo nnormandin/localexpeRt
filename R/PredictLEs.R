@@ -3,7 +3,7 @@
 #' Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
 #' @param x Attribute vector of new instance to be predicted
 #' @param LE.model.list Model list object from TrainLEs function
-#' @keywords
+#' @keywords predict
 #' @export
 #' @examples
 #'
