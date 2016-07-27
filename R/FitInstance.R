@@ -31,6 +31,9 @@ FitInstance <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF',
   # epdf is the diff of the ecdf
   epdf <- diff(ecdf)
 
+  # no negative values
+  epdf[epdf<0] <- 0
+
   # compute mid points in sample.points
   sample.interp <- (sample.points[1:length(sample.points)-1]
                     + sample.points[2:length(sample.points)])/2
@@ -39,8 +42,7 @@ FitInstance <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF',
   avg <- sum(sample.interp * epdf)
 
   # compute variance using epdf and interpolated points
-  var <- sum(((sample.interp - avg)^2) * epdf)
-
+  variance <- sum(((sample.interp - avg)^2) * epdf)
 
   # this form should now be degraded
   #avg <- (sum(epdf*sample.points[1:length(sample.points)-1])

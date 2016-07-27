@@ -25,6 +25,8 @@ FitMatrix <- function(preds.matrix, y.values, sample.points = FALSE, ...){
   # combine distribution estimate with moments
   out <- as.data.frame(cbind(dist.rows, meta.rows$mean, meta.rows$var,
                              meta.rows$skew, meta.rows$kurtosis))
+  out <- as.data.frame(do.call(cbind, lapply(out, as.numeric)))
+
 
   # rename output
   names(out) <- c(cnames, "mean", "var", "skewness", "kurtosis")
