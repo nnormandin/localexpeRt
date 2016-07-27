@@ -31,14 +31,28 @@ FitInstance <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF',
   # epdf is the diff of the ecdf
   epdf <- diff(ecdf)
 
-  # compute average using epdf
-  avg <- (sum(epdf*sample.points[1:length(sample.points)-1])
-          + sum(epdf*sample.points[2:length(sample.points)]))/2
+  # compute mid points in sample.points
+  sample.interp <- (sample.points[1:length(sample.points)-1]
+                    + sample.points[2:length(sample.points)])/2
+
+  # compute average using epdf and interpolated points
+  avg <- sum(sample.interp * epdf)
+
+  # compute variance using epdf and interpolated points
+  var <- sum(((sample.interp - avg)^2) * epdf)
+
+
+  # this form should now be degraded
+  #avg <- (sum(epdf*sample.points[1:length(sample.points)-1])
+  #        + sum(epdf*sample.points[2:length(sample.points)]))/2
 
   # compute variance using epdf
   ## TODO: var function gives negative values somehow- need fix
-  variance <- (sum((((sample.points[1:length(sample.points)-1] - avg)^2) * epdf)) +
-                 sum((((sample.points[2:length(sample.points)] - avg)^2) * epdf))) / 2
+
+  #variance <- (sum((((sample.points[1:length(sample.points)-1] - avg)^2) * epdf)) +
+  #                 sum((((sample.points[2:length(sample.points)] - avg)^2) * epdf))) / 2
+
+
 
   # compute skew and kurtosis of epdf
   skew <- skewness(epdf)
