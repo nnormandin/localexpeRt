@@ -49,7 +49,7 @@ LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
 # create meta feature input matrix for stacked regression model
 meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean))
 meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
-cnames <- c(paste0('c', seq(1, 15)), 'mean')
+cnames <- c(paste0('c', seq(1, 30)), 'mean')
 names(meta.x) <- cnames
 
 # test a regression model
@@ -59,5 +59,5 @@ trControl <- trainControl(method = "cv", number = 10,
                           savePredictions = TRUE)
 
 # create stacked model
-L1.model <- train(x = meta.x, y = y, method = 'gbm')
+L1.model <- train(x = meta.x, y = y, method = 'gbm', trControl = trControl)
 
