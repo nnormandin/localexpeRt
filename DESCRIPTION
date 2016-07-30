@@ -12,4 +12,3 @@ Imports:
 License: GPL
 LazyData: true
 RoxygenNote: 5.0.1
-PerformanceAnalytics::
