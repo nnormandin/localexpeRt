@@ -28,6 +28,10 @@ PredictNew(x, LE.model.list, stack.model, y.vals, mode = "CDF",
 \item{kurtosis}{Whether to include kurtosis in stacked model}
 
 \item{plot}{Display plot of LE predictions and stack estimate}
+
+\item{verbose}{Determines whether prediction information is printed}
+
+\item{...}{Additional arguments to pass to the FitInstance function}
 }
 \description{
 Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments

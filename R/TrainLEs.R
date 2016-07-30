@@ -15,7 +15,7 @@
 TrainLEs <- function(x, bincols, trControl = NULL, method = "lm", n.repeats = 10, ...){
 
   if(is.null(trControl)){
-    trControl <- trainControl(method = "cv", number = n.repeats,
+    trControl <- caret::trainControl(method = "cv", number = n.repeats,
                                returnData = FALSE,
                                savePredictions = TRUE,
                                classProbs = TRUE)}
@@ -23,7 +23,7 @@ TrainLEs <- function(x, bincols, trControl = NULL, method = "lm", n.repeats = 10
   trainer <- function(y){
     ## TODO: start parallel and stop at end of each train
     set.seed(123)
-    mod <- train(x = x, y = y, method = method, trControl = trControl, ...)}
+    mod <- caret::train(x = x, y = y, method = method, trControl = trControl, ...)}
   models <- lapply(bincols, trainer)
   t.final <- proc.time() - t.0
   print(t.final)

@@ -7,10 +7,10 @@
 #'
 
 ExtractBestPreds <- function(model){
-  best.pred.key <- data.table(model$bestTune, key = names(model$bestTune)) # save this
-  all.preds <- data.table(model$pred, key = names(model$bestTune))
+  best.pred.key <- data.table::data.table(model$bestTune, key = names(model$bestTune)) # save this
+  all.preds <- data.table::data.table(model$pred, key = names(model$bestTune))
   best.pred <- all.preds[best.pred.key, ] # save this, and reorder?
-  setorderv(best.pred, c("rowIndex", "Resample"))
+  data.table::setorderv(best.pred, c("rowIndex", "Resample"))
   return(best.pred)}
 
 #' Extract probabilities from class estimation predictions
@@ -34,8 +34,8 @@ ExtractDownProbs <- function(model){
 #'
 
 ExtractPerformance <- function(model){
-  best.pred.key <- data.table(model$bestTune, key = names(model$bestTune))
-  results.table <- data.table(model$results, key = names(model$bestTune))
+  best.pred.key <- data.table::data.table(model$bestTune, key = names(model$bestTune))
+  results.table <- data.table::data.table(model$results, key = names(model$bestTune))
   results.table <- results.table[best.pred.key, ] # save this
   return(results.table)}
 

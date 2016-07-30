@@ -2,7 +2,7 @@
 #'
 #' Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
 #' @param row Vector of LE predictions
-#' @param y.vals Y-values from BinCols function
+#' @param y.values Y-values from BinCols function
 #' @param granularity Number of interpolation points in fitting; defaults to 100
 #' @param df Degrees of freedom in smoothing spline; defaults to 10
 #' @param mode Choose whether probability output is in CDF or PDF format
@@ -57,8 +57,8 @@ FitInstance <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF',
 
 
   # compute skew and kurtosis of epdf
-  skew <- skewness(epdf)
-  kurt <- kurtosis(epdf)
+  skew <- PerformanceAnalytics::skewness(epdf)
+  kurt <- PerformanceAnalytics::kurtosis(epdf)
 
 
   if (mode == 'CDF') {

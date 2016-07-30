@@ -10,6 +10,8 @@ FitInstance(row, y.values, granularity = 100, df = 10, mode = "CDF",
 \arguments{
 \item{row}{Vector of LE predictions}
 
+\item{y.values}{Y-values from BinCols function}
+
 \item{granularity}{Number of interpolation points in fitting; defaults to 100}
 
 \item{df}{Degrees of freedom in smoothing spline; defaults to 10}
@@ -17,8 +19,6 @@ FitInstance(row, y.values, granularity = 100, df = 10, mode = "CDF",
 \item{mode}{Choose whether probability output is in CDF or PDF format}
 
 \item{plot}{Plot output; defaults to FALSE}
-
-\item{y.vals}{Y-values from BinCols function}
 }
 \description{
 Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments

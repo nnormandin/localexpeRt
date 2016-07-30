@@ -9,11 +9,11 @@ FitMatrix(preds.matrix, y.values, sample.points = FALSE, ...)
 \arguments{
 \item{preds.matrix}{Matrix of LE predictions from ExtractModelInfo function}
 
+\item{y.values}{Y-values from BinCols function}
+
 \item{sample.points}{Whether or not to include sample points in output; defaults to false}
 
 \item{...}{Additional parameters to be passed to fitting function}
-
-\item{y.vals}{Y-values from BinCols function}
 }
 \description{
 Fit a curve and calculate moments for all rows in a matrix of LE predictions

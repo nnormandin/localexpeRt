@@ -11,6 +11,8 @@
 #' @param skewness Whether to include skewness in stacked model
 #' @param kurtosis Whether to include kurtosis in stacked model
 #' @param plot Display plot of LE predictions and stack estimate
+#' @param verbose Determines whether prediction information is printed
+#' @param ... Additional arguments to pass to the FitInstance function
 #' @keywords predict
 #' @export
 #' @examples
