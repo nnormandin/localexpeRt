@@ -17,10 +17,9 @@ The method implemented in this package is for use in machine learning tasks invo
 * the continuous target variable is transformed into many discrete (specifically binary) target variables
 * local expert predictions are reconstructed to form a unique predicted target variable distribution for each instance
 
-
 ## Data
 
-In this example I will use Quantitative Structure-Activity Relationship (QSAR) data from Max Kuhn's `AppliedPredictiveModeling` package. QSAR modeling is used to predict the properties of chemical compounds (eg: to determine feasibility of a compound's medicinal use).
+In this example I will use Quantitative Structure-Activity Relationship (QSAR) data from Max Kuhn's `AppliedPredictiveModeling` package. QSAR modeling is used to predict the properties of chemical compounds (eg. to determine feasibility of a compound's medicinal use).
 
 ```{r message = FALSE}
 require(AppliedPredictiveModeling)
@@ -39,7 +38,9 @@ The data set consists of 951 instances, each with 228 attributes. You can verify
 dim(x)
 ```
 
-You can use `glimpse(x)` to see that the attributes are a mix of continuous and binary (some of which are very sparse). We can quickly verify that there are no missing or `NA` values:
+You can use `glimpse(x)` to see that the attributes are a mix of continuous and binary. Some examples of continuous attributes are the molecular weight of the compound (`MolWeight`), number of atoms (`NumAtoms`), and the number of aromatic bonds (`NumAromaticBonds`). There are 208 fairly sparse binary attributes labeled `FP001` to `FP208`.
+
+We can quickly verify that there are no missing or `NA` values:
 
 ```{r}
 sum(sapply(x, function(x) sum(is.na(x))))
@@ -47,14 +48,65 @@ sum(sapply(x, function(x) sum(is.na(x))))
 
 The target variable we are trying to predict is the solubility of a compound. Let's take a look at how it is distributed in our 951 instances.
 
-```{r}
+```{r, fig.width=6}
 hist(y, main = '', xlab = 'Solubility', breaks = 40)
 ```
 
+## Training a traditional regression model
+
+Before going into the specifics of the `localexpeRt` method, we will demonstrate how to solve this type of problem in R using traditional regression methods with Max Kuhn's excellent `caret` package. This package is used as a wrapper for a number of CRAN libraries to standardize the pre-processing, training, and testing procedures common in data science tasks. You can learn more about using `caret` at \url{topepo.github.io/caret/}.
+
+The `train` function is used to fit models to data. We'll specify a linear model (ordinary least squares) and leave the `trControl` argument blank for now (this will default to using 25 bootstrap samples).
+
+```{r, warning=FALSE}
+require(caret, quietly = TRUE)
+linear.model <- train(x, y, method = 'lm')
+class(linear.model) # determine object type
+linear.model$results$Rsquared # check model performance
+```
+
+Note that this is roughly equivalent to the very common `lm(y ~ x)`, but allows us to use a standard format and leverage the powerful pre-processing and testing tools available to `caret`. You can explore the remarkable amount of information stored in the `train` object by executing `str(linear.model)`.
+
+
 ## Training local experts
 
-Now that we understand our data and our task, 
+Applying the `localexpeRt` method to this data set involves considerably more steps. The added accuracy and distributional understanding may not be worth the effort (not to mention the computational cost) in many cases. For example, if:
+
+  * A simple model provides a good fit already
+  * Marginally improving model accuracy does not provide a signficant benefit
+  * Developing a deeper understanding of prediction variance is unimportant
+
+In this case, however, we will assume (due to the extraordinary cost of pharmaceutical research) that even a slight increase in predictive accuracy is worth a few extra keystrokes.
+
+# Determine break points
+
+The first step in 
 
 ## Building a stacked regression model
 
 ## Using the ensemble
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
