@@ -1,0 +1,60 @@
+---
+title: "Understanding localexpeRt"
+author: "Nick Normandin"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Method
+
+The method implemented in this package is for use in machine learning tasks involving the prediction of a continuous variable. While there are many choices available for regression algorithms, Binary Local Expert Regression is novel in a few ways:
+
+* the concept of stacked regression, or "stacking" is used to train multiple layers of models
+* the continuous target variable is transformed into many discrete (specifically binary) target variables
+* local expert predictions are reconstructed to form a unique predicted target variable distribution for each instance
+
+
+## Data
+
+In this example I will use Quantitative Structure-Activity Relationship (QSAR) data from Max Kuhn's `AppliedPredictiveModeling` package. QSAR modeling is used to predict the properties of chemical compounds (eg: to determine feasibility of a compound's medicinal use).
+
+```{r message = FALSE}
+require(AppliedPredictiveModeling)
+
+# bring data into environment
+data(solubility)
+
+# rename for simplicity
+x <- solTrainXtrans
+y <- solTrainY
+```
+
+The data set consists of 951 instances, each with 228 attributes. You can verify this using:
+
+```{r}
+dim(x)
+```
+
+You can use `glimpse(x)` to see that the attributes are a mix of continuous and binary (some of which are very sparse). We can quickly verify that there are no missing or `NA` values:
+
+```{r}
+sum(sapply(x, function(x) sum(is.na(x))))
+```
+
+The target variable we are trying to predict is the solubility of a compound. Let's take a look at how it is distributed in our 951 instances.
+
+```{r}
+hist(y, main = '', xlab = 'Solubility', breaks = 40)
+```
+
+## Training local experts
+
+Now that we understand our data and our task, 
+
+## Building a stacked regression model
+
+## Using the ensemble
