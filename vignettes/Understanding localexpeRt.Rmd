@@ -70,7 +70,7 @@ Note that this is roughly equivalent to the very common `lm(y ~ x)`, but allows 
 
 ## Training local experts
 
-Applying the `localexpeRt` method to this data set involves considerably more steps. The added accuracy and distributional understanding may not be worth the effort (not to mention the computational cost) in many cases. For example, if:
+Applying the `localexpeRt` method to this data set involves considerably more steps. The added accuracy and distributional understanding may not be worth the effort (not to mention the computational cost) in some cases. For example, if:
 
   * A simple model provides a good fit already
   * Marginally improving model accuracy does not provide a signficant benefit
@@ -80,7 +80,10 @@ In this case, however, we will assume (due to the extraordinary cost of pharmace
 
 #### Determine break points
 
-The first step in 
+The first step in using the local expert method to solve a regression problem is to encode the continuous target variable vector as a binary matrix. This will be accomplished using indicator functions with criteria values placed throughout the expected range of the target variable. The two ways of determing the location of these 'break points' within the expected response range are:
+
+  1. Equally Probable (EP) Intervals:  
+  2. Equally Wide (EW) Intervals: 
 
 
 ```{r}
