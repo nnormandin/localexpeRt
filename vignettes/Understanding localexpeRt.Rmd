@@ -78,11 +78,78 @@ Applying the `localexpeRt` method to this data set involves considerably more st
 
 In this case, however, we will assume (due to the extraordinary cost of pharmaceutical research) that even a slight increase in predictive accuracy is worth a few extra keystrokes.
 
-# Determine break points
+#### Determine break points
 
 The first step in 
 
+
+```{r}
+# convert the response into binary columns
+# use equally probable width, output 20 columns
+y.cols <- BinCols(y, n = 30, mode = 'EP')
+```
+
+```{r}
+# examine breakpoints over histogram of response
+hist(y, main = '', xlab = 'Solubility')
+abline(v = y.cols$y.vals)
+```
+
+
+#### Train local experts
+
+```{r}
+# train Local Experts on each of the binary columns
+# use default train control object with Support Vector Machines algorithm and linear kernel
+model.list <- TrainLEs(x, y.cols$cols, method = 'gbm')
+
+# examine ensemble performance by extracting all model info
+model.info <- ExtractModelInfo(model.list)
+
+# plot the model information
+PlotLEs(model.info)
+
+```
+
+#### Smooth prediction distributions
+
+```{r}
+# examine the fit of a random instance
+instance.id <- sample(seq(1, nrow(model.info$preds.matrix)),1)
+instance.check <- FitInstance(model.info$preds.matrix[instance.id,], y.values = y.cols$y.vals,
+                              mode = 'PDF', plot = TRUE)
+
+# fit every instance
+LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
+```
+
+
+
 ## Building a stacked regression model
+
+#### Create stacking input data frame
+
+```{r}
+# create meta feature input matrix for stacked regression model
+meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean))
+meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
+cnames <- c(paste0('c', seq(1, 30)), 'mean')
+names(meta.x) <- cnames
+```
+
+#### Build a stacked model
+
+```{r}
+# test a regression model
+# create train control object
+trControl <- trainControl(method = "cv", number = 10,
+                          returnData = FALSE,
+                          savePredictions = TRUE)
+
+# create stacked model
+L1.model <- train(x = meta.x, y = y, method = 'gbm', trControl = trControl)
+```
+
 
 ## Using the ensemble
 
