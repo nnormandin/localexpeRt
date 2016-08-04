@@ -23,6 +23,7 @@ In this example I will use Quantitative Structure-Activity Relationship (QSAR) d
 
 ```{r message = FALSE}
 require(AppliedPredictiveModeling)
+require(localexpeRt)
 
 # bring data into environment
 data(solubility)
