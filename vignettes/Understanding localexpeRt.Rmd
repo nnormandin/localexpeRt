@@ -24,6 +24,7 @@ In this example I will use Quantitative Structure-Activity Relationship (QSAR) d
 ```{r message = FALSE}
 require(AppliedPredictiveModeling)
 require(localexpeRt)
+## TODO: add gbm package dependency
 
 # bring data into environment
 data(solubility)
@@ -81,19 +82,26 @@ In this case, however, we will assume (due to the extraordinary cost of pharmace
 
 #### Determine break points
 
-The first step in using the local expert method to solve a regression problem is to encode the continuous target variable vector as a binary matrix. This will be accomplished using indicator functions with criteria values placed throughout the expected range of the target variable. The two ways of determing the location of these 'break points' within the expected response range are:
+The first step in using the local expert method to solve a regression problem is to encode the continuous target variable vector as a binary matrix. Each column in this matrix represents an additional local expert to be trained and included in the ensemble. Including more models/columns increases the granularity of the method. Having too few models will result in poor prediction accuracy, but improvement is not linear with each model addition and eventually there is a negative marginal benefit. While the number of models to include varies between domains, it's safe to use 20-30 in most applications.
 
-  1. Equally Probable (EP) Intervals:  
-  2. Equally Wide (EW) Intervals: 
+We will accomplish the binary encoding using indicator functions with criteria values placed throughout the expected range of the target variable. The two ways of determing the location of these 'break points' within the expected response range are:
+
+  1. Equally Wide (EW) Intervals: break points are placed at equidistant values throughout the expected range of the target. The distance between each break point is calculated using the user-defined total number of models/columns desired. This form of interval designation is equivalent to the bins created when plotting histograms.
+  
+  2. Equally Probable (EP) Intervals: break points are placed at equally wide _quantiles_ of the target. The advantage to this method is that an equal number of instances is between each break point, making it easy to understand the extent of class imbalance in each separate modeling task. A disadvantage to this method is that it may produce less reliable estimates of outliers if there are long tails in the target variable distribution.
+  
+The decision of `n` (the number of columns/models to use) and EP vs EW binning may require experimentation. Results (in terms of final model regression accuracy) differ depending on the local expert model family, meta-features included, and regression stacking model family. In this example, we will use 30 EP break points
 
 
-```{r}
+```{r, eval = FALSE} 
 # convert the response into binary columns
-# use equally probable width, output 20 columns
-y.cols <- BinCols(y, n = 30, mode = 'EP')
+# use equally probable, output 20 columns
+y.cols <- BinCols(y, n = 10, mode = 'EP')
 ```
 
-```{r}
+
+
+```{r, eval = FALSE}
 # examine breakpoints over histogram of response
 hist(y, main = '', xlab = 'Solubility')
 abline(v = y.cols$y.vals)
@@ -102,10 +110,10 @@ abline(v = y.cols$y.vals)
 
 #### Train local experts
 
-```{r}
+```{r, eval = FALSE}
 # train Local Experts on each of the binary columns
 # use default train control object with Support Vector Machines algorithm and linear kernel
-model.list <- TrainLEs(x, y.cols$cols, method = 'gbm')
+model.list <- TrainLEs(x, y.cols$cols, method = 'pls')
 
 # examine ensemble performance by extracting all model info
 model.info <- ExtractModelInfo(model.list)
@@ -117,7 +125,7 @@ PlotLEs(model.info)
 
 #### Smooth prediction distributions
 
-```{r}
+```{r, eval = FALSE}
 # examine the fit of a random instance
 instance.id <- sample(seq(1, nrow(model.info$preds.matrix)),1)
 instance.check <- FitInstance(model.info$preds.matrix[instance.id,], y.values = y.cols$y.vals,
@@ -133,7 +141,7 @@ LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
 
 #### Create stacking input data frame
 
-```{r}
+```{r, eval = FALSE}
 # create meta feature input matrix for stacked regression model
 meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean))
 meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
@@ -143,7 +151,7 @@ names(meta.x) <- cnames
 
 #### Build a stacked model
 
-```{r}
+```{r, eval = FALSE}
 # test a regression model
 # create train control object
 trControl <- trainControl(method = "cv", number = 10,

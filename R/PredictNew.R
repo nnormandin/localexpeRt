@@ -50,11 +50,12 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
     LE.preds <- c(LE.preds, instance.fit$kurtosis)
   }
 
-  # 4) pass new x vector into L1 regression model
-
+  # 4) transpose and pass new x vector into L1 regression model
+  LE.preds <- t(LE.preds)
   stack.pred <- predict(stack.model, newdata = LE.preds)
 
   # 5) output point prediction, LE predictions, var
+  return(stack.pred)
   # 6) output plot w/ lines at distribution mean and stacked prediction
 }
 
