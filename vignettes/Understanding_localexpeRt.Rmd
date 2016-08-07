@@ -166,6 +166,24 @@ L1.model <- train(x = meta.x, y = y, method = 'gbm', trControl = trControl)
 ## Using the ensemble
 
 
+```{r}
+
+# receive new data, pick a random row to predict
+x.new <- solTestX[sample(seq(1, length(solTestX)),1),]
+
+# pass through local expert ensemble
+x.new.LEs <- PredictLEs(x.new, model.list)
+
+# fit the local expert CDF
+x.new.fit <- FitInstance(x.new.LEs, y.cols$y.vals, plot = TRUE)
+
+# 
+
+```
+
+
+
+
 
 
 

@@ -30,25 +30,33 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
 
   instance.fit <- FitInstance(row = LE.preds, y.values = y.vals, mode = mode, ...)
 
-## TODO: detect meta features automatically by looking at variables in stacked model!!
+## TODO: test this
+
+  meta.names <- c('mean', 'var', 'skewness', 'kurtosis')
+  for(i in 1:length(meta.names)){
+    if(meta.names[i] %in% names(stack.model$finalModel$model)){
+      LE.preds <- c(LE.preds, instance.fit[meta.names[i]])
+    }
+  }
+
 
   # 3) cbind meta features depending on user parameter choices
 
-  if(mean == TRUE){
-    LE.preds <- c(LE.preds, instance.fit$mean)
-  }
-
-  if(var == TRUE){
-    LE.preds <- c(LE.preds, instance.fit$var)
-  }
-
-  if(skewness == TRUE){
-    LE.preds <- c(LE.preds, instance.fit$skew)
-  }
-
-  if(kurtosis == TRUE){
-    LE.preds <- c(LE.preds, instance.fit$kurtosis)
-  }
+  # if(mean == TRUE){
+  #   LE.preds <- c(LE.preds, instance.fit$mean)
+  # }
+  #
+  # if(var == TRUE){
+  #   LE.preds <- c(LE.preds, instance.fit$var)
+  # }
+  #
+  # if(skewness == TRUE){
+  #   LE.preds <- c(LE.preds, instance.fit$skew)
+  # }
+  #
+  # if(kurtosis == TRUE){
+  #   LE.preds <- c(LE.preds, instance.fit$kurtosis)
+  # }
 
   # 4) transpose and pass new x vector into L1 regression model
   LE.preds <- t(LE.preds)
