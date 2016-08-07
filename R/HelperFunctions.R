@@ -3,7 +3,6 @@
 #' Extracts best predictions from each resample from cv data
 #' @param model The model to extract predictions from
 #' @keywords model
-#' @export
 #'
 
 ExtractBestPreds <- function(model){
@@ -18,7 +17,6 @@ ExtractBestPreds <- function(model){
 #' Extracts the probability that instances will be less than the target value
 #' @param model The model to extract probabilities from
 #' @keywords model
-#' @export
 #'
 
 ExtractDownProbs <- function(model){
@@ -30,7 +28,6 @@ ExtractDownProbs <- function(model){
 #' Extracts all performance data from best model
 #' @param model The model to extract performance from
 #' @keywords model
-#' @export
 #'
 
 ExtractPerformance <- function(model){
@@ -44,7 +41,6 @@ ExtractPerformance <- function(model){
 #' Extracts kappa from best model performance
 #' @param model The model to extract kappa from
 #' @keywords model
-#' @export
 
 ExtractKappa <- function(model){
   Kappa <- model$Kappa
@@ -55,7 +51,6 @@ ExtractKappa <- function(model){
 #' Extracts accuracy from best model performance
 #' @param model The model to extract accuracy from
 #' @keywords model
-#' @export
 #'
 
 ExtractAccuracy <- function(model){
@@ -67,7 +62,6 @@ ExtractAccuracy <- function(model){
 #' Extracts accuracy standard deviation of resamples from best model performance
 #' @param model The model to extract accuracy SD from
 #' @keywords model
-#' @export
 #'
 
 ExtractAccuracySD <- function(model){
@@ -79,7 +73,6 @@ ExtractAccuracySD <- function(model){
 #' Extracts kappa standard deviation of resamples from best model performance
 #' @param model The model to extract kappa SD from
 #' @keywords model
-#' @export
 #'
 
 ExtractKappaSD <- function(model){
