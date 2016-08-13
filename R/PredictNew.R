@@ -34,10 +34,9 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
 
   meta.names <- c('mean', 'var', 'skewness', 'kurtosis')
   for(i in 1:length(meta.names)){
-    print(i)
-    if(meta.names[i] %in% names(stack.model$finalModel$model)){
+    if(meta.names[i] %in% names(stack.model$trainingData)){
       LE.preds <- c(LE.preds, instance.fit[meta.names[i]])
-      print(meta.names[i])
+      print(paste('Attaching meta-feature:', meta.names[i]))
     }
   }
 
