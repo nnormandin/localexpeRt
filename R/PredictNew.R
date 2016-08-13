@@ -34,10 +34,13 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
 
   meta.names <- c('mean', 'var', 'skewness', 'kurtosis')
   for(i in 1:length(meta.names)){
+    print(i)
     if(meta.names[i] %in% names(stack.model$finalModel$model)){
       LE.preds <- c(LE.preds, instance.fit[meta.names[i]])
+      print(meta.names[i])
     }
   }
+
 
 
   # 3) cbind meta features depending on user parameter choices
@@ -61,7 +64,6 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
   # 4) transpose and pass new x vector into L1 regression model
   LE.preds <- t(LE.preds)
   stack.pred <- predict(stack.model, newdata = LE.preds)
-
   # 5) output point prediction, LE predictions, var
   return(stack.pred)
   # 6) output plot w/ lines at distribution mean and stacked prediction
