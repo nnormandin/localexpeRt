@@ -6,10 +6,6 @@
 #' @param stack.model Regression model trained on LE output
 #' @param y.vals Y-values from BinCols function
 #' @param mode Choose whether probability output is in CDF or PDF format
-#' @param mean Whether to include mean in stacked model
-#' @param var Whether to include variance in stacked model
-#' @param skewness Whether to include skewness in stacked model
-#' @param kurtosis Whether to include kurtosis in stacked model
 #' @param plot Display plot of LE predictions and stack estimate
 #' @param verbose Determines whether prediction information is printed
 #' @param ... Additional arguments to pass to the FitInstance function
@@ -18,8 +14,7 @@
 #' @examples
 #'
 
-PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean = FALSE,
-                       var = FALSE, skewness = FALSE, kurtosis = FALSE,
+PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF',
                        plot = FALSE, verbose = FALSE, ...){
 
   # 1) pass x vector through all LEs to get prediction
@@ -30,7 +25,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
 
   instance.fit <- FitInstance(row = LE.preds, y.values = y.vals, mode = mode, ...)
 
-## TODO: test this
+  # 3) attach meta features if they are detected in the original model
 
   meta.names <- c('mean', 'var', 'skewness', 'kurtosis')
   for(i in 1:length(meta.names)){
@@ -40,10 +35,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
     }
   }
 
-
-
-  # 3) cbind meta features depending on user parameter choices
-
+  ## no longer necessary:
   # if(mean == TRUE){
   #   LE.preds <- c(LE.preds, instance.fit$mean)
   # }
@@ -59,6 +51,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF', mean
   # if(kurtosis == TRUE){
   #   LE.preds <- c(LE.preds, instance.fit$kurtosis)
   # }
+
 
   # 4) transpose and pass new x vector into L1 regression model
   LE.preds <- t(LE.preds)
