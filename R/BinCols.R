@@ -38,9 +38,10 @@ BinCols <- function(x, n = 30, mode = 'EW', EW.buffer = 0.01){
   if(mode == 'EW'){
 
     # save y.values
-    y.values <- seq(from = quantile(x, probs = EW.buffer),
-                    to = quantile(x, probs = 1 - EW.buffer, length.out = n))
-    y.values <- y.values[2:length(y.values - 1)]
+    a <- quantile(x, probs = EW.buffer)
+    b <- quantile(x, probs = 1-EW.buffer)
+    y.values <- seq(from = a,
+                    to = b, length.out = n)
 
     # apply indicator function, generating binary column for each quantile
     binary.cols <- as.data.frame(lapply(y.values, function(i) ifelse(x >= i, "UP", "DOWN")))
