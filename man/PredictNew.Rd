@@ -5,7 +5,6 @@
 \title{Predict response of new instance using local expert ensemble with stacking}
 \usage{
 PredictNew(x, LE.model.list, stack.model, y.vals, mode = "CDF",
-  mean = FALSE, var = FALSE, skewness = FALSE, kurtosis = FALSE,
   plot = FALSE, verbose = FALSE, ...)
 }
 \arguments{
@@ -18,14 +17,6 @@ PredictNew(x, LE.model.list, stack.model, y.vals, mode = "CDF",
 \item{y.vals}{Y-values from BinCols function}
 
 \item{mode}{Choose whether probability output is in CDF or PDF format}
-
-\item{mean}{Whether to include mean in stacked model}
-
-\item{var}{Whether to include variance in stacked model}
-
-\item{skewness}{Whether to include skewness in stacked model}
-
-\item{kurtosis}{Whether to include kurtosis in stacked model}
 
 \item{plot}{Display plot of LE predictions and stack estimate}
 
