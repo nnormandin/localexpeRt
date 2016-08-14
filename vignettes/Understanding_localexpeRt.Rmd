@@ -96,7 +96,7 @@ The decision of `n` (the number of columns/models to use) and EP vs EW binning m
 ```{r, eval = FALSE} 
 # convert the response into binary columns
 # use equally probable, output 20 columns
-y.cols <- BinCols(y, n = 10, mode = 'EP')
+y.cols <- BinCols(y, n = 30, mode = 'EW')
 ```
 
 
@@ -113,7 +113,7 @@ abline(v = y.cols$y.vals)
 ```{r, eval = FALSE}
 # train Local Experts on each of the binary columns
 # use default train control object with Support Vector Machines algorithm and linear kernel
-model.list <- TrainLEs(x, y.cols$cols, method = 'pls')
+model.list <- TrainLEs(x, y.cols$cols, method = 'svmLinear')
 
 # examine ensemble performance by extracting all model info
 model.info <- ExtractModelInfo(model.list)
@@ -146,7 +146,7 @@ LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
 meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean))
 meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
 cnames <- c(paste0('c', seq(1, ncol(meta.x)-1)), 'mean')
-names(meta.x) <- cnames
+colnames(meta.x) <- cnames
 ```
 
 #### Build a stacked model
@@ -169,7 +169,7 @@ L1.model <- train(x = meta.x, y = y, method = 'gbm', trControl = trControl)
 ```{r, eval = FALSE}
 
 # receive new data, pick a random row to predict
-x.new <- solTestX[sample(seq(1, length(solTestX)),1),]
+x.new <- solTestXtrans[sample(seq(1, length(solTestXtrans)),1),]
 
 # pass through local expert ensemble
 x.new.LEs <- PredictLEs(x.new, model.list)
