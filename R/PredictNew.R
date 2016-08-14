@@ -30,7 +30,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF',
   meta.names <- c('mean', 'var', 'skewness', 'kurtosis')
   for(i in 1:length(meta.names)){
     if(meta.names[i] %in% names(stack.model$trainingData)){
-      LE.preds <- c(LE.preds, instance.fit[meta.names[i]])
+      x1 <- c(LE.preds, instance.fit[meta.names[i]])
       print(paste('Attaching meta-feature:', meta.names[i]))
     }
   }
@@ -54,10 +54,17 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF',
 
 
   # 4) transpose and pass new x vector into L1 regression model
-  LE.preds <- t(LE.preds)
-  stack.pred <- predict(stack.model, newdata = LE.preds)
+  x1 <- t(x1)
+  stack.pred <- predict(stack.model, newdata = x1)
+
+  if(plot == TRUE){
+    plot(x = y.vals, y = LE.preds, type = 'l')
+    }
+
   # 5) output point prediction, LE predictions, var
-  return(stack.pred)
+  return(list(stack.pred, y.vals, LE.preds))
   # 6) output plot w/ lines at distribution mean and stacked prediction
+
+
 }
 
