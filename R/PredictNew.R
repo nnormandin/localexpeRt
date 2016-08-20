@@ -59,10 +59,11 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF',
 
   if(plot == TRUE){
     plot(x = y.vals, y = LE.preds, type = 'l')
+
     }
 
   # 5) output point prediction, LE predictions, var
-  return(list(stack.pred, y.vals, LE.preds))
+  return(list(y.hat = stack.pred, y.vals = y.vals, LE.preds = LE.preds))
   # 6) output plot w/ lines at distribution mean and stacked prediction
 
 
