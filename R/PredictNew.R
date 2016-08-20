@@ -8,6 +8,7 @@
 #' @param mode Choose whether probability output is in CDF or PDF format
 #' @param plot Display plot of LE predictions and stack estimate
 #' @param verbose Determines whether prediction information is printed
+#' @param df Degrees of freedom to pass spline if plotting
 #' @param ... Additional arguments to pass to the FitInstance function
 #' @keywords predict
 #' @export
@@ -15,7 +16,7 @@
 #'
 
 PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF',
-                       plot = FALSE, verbose = FALSE, ...){
+                       plot = FALSE, verbose = FALSE, df = 10, ...){
 
   # 1) pass x vector through all LEs to get prediction
 
@@ -58,8 +59,10 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF',
   stack.pred <- predict(stack.model, newdata = x1)
 
   if(plot == TRUE){
-    plot(x = y.vals, y = LE.preds, type = 'l')
-
+    plot(x = y.vals, y = LE.preds, type = 'l', lty = 2)
+    abline(v = stack.pred)
+    smooth <- smooth.spline(y = LE.preds, x = y.vals, df = df)
+    lines(smooth)
     }
 
   # 5) output point prediction, LE predictions, var
