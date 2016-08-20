@@ -63,6 +63,8 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF',
     abline(v = stack.pred)
     smooth <- smooth.spline(y = LE.preds, x = y.vals, df = df)
     lines(smooth)
+    text(y = 0.2, x = stack.pred, pos = 4,
+         labels = paste0('y.hat = ', format(stack.pred, digits = 4)))
     }
 
   # 5) output point prediction, LE predictions, var
