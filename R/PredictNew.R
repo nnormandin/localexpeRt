@@ -59,7 +59,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals, mode = 'CDF',
   stack.pred <- predict(stack.model, newdata = x1)
 
   if(plot == TRUE){
-    plot(x = y.vals, y = LE.preds, type = 'l', lty = 2)
+    plot(x = y.vals, y = LE.preds)
     abline(v = stack.pred)
     smooth <- smooth.spline(y = LE.preds, x = y.vals, df = df)
     lines(smooth)
