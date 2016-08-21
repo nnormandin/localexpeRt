@@ -1,11 +1,10 @@
 #' Fit a CDF to a row of local expert predictions
 #'
 #' Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
-#' @param row Vector of LE predictions
+#' @param LE.preds Vector of LE predictions
 #' @param y.values Y-values from BinCols function
 #' @param granularity Number of interpolation points in fitting; defaults to 100
 #' @param df Degrees of freedom in smoothing spline; defaults to 10
-#' @param mode Choose whether probability output is in CDF or PDF format
 #' @param plot Plot output; defaults to FALSE
 #' @keywords smooth
 #' @export
@@ -13,10 +12,10 @@
 #'
 
 
-FitInstance <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF', plot = FALSE) {
+FitInstance <- function(LE.preds, y.values, granularity = 1000, df = 10, plot = FALSE) {
 
   # first fit a spline to the predictions to make a smoothed ECDF
-  smooth <- smooth.spline(y = row, x = y.values, df = df)
+  smooth <- smooth.spline(y = LE.preds, x = y.values, df = df)
 
   # sample at points from the smallest to largest y value, n equal to granularity
   sample.points <- seq(from = min(y.values), to = max(y.values), length.out = granularity)
@@ -27,6 +26,7 @@ FitInstance <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF',
 
   # ecdf is a vector of smoothed sample points in original predictions ECDF
   ecdf <- sapply(sample.points, FitPredict)
+  ecdf[ecdf > 1] <- 1
 
   # epdf is the diff of the ecdf
   epdf <- diff(ecdf)
@@ -44,38 +44,19 @@ FitInstance <- function(row, y.values, granularity = 100, df = 10, mode = 'CDF',
   # compute variance using epdf and interpolated points
   variance <- sum(((sample.interp - avg)^2) * epdf)
 
-  # this form should now be degraded
-  #avg <- (sum(epdf*sample.points[1:length(sample.points)-1])
-  #        + sum(epdf*sample.points[2:length(sample.points)]))/2
-
-  # compute variance using epdf
-  ## TODO: var function gives negative values somehow- need fix
-
-  #variance <- (sum((((sample.points[1:length(sample.points)-1] - avg)^2) * epdf)) +
-  #                 sum((((sample.points[2:length(sample.points)] - avg)^2) * epdf))) / 2
-
-
-
   # compute skew and kurtosis of epdf
   skew <- PerformanceAnalytics::skewness(epdf)
   kurt <- PerformanceAnalytics::kurtosis(epdf)
 
 
-  if (mode == 'CDF') {
-    out <- list(ecdf, sample.points, avg, variance, skew, kurt)
-    names(out) <- c("CDF", "SamplePoints", "mean", "var", "skew", "kurtosis")
-    if (plot == TRUE) {
-      plot(x = out$SamplePoints, y = out$CDF, type = 'l', xlab = 'target variable',
-           ylab = 'probability')
-    }
-    return(out)
-  } else {
-    out <- list(epdf, sample.points, avg, variance, skew, kurt)
-    names(out) <- c("PDF", "SamplePoints", "mean", "var", "skew", "kurtosis")
-    if (plot == TRUE) {
-      plot(x = out$SamplePoints[2:length(out$SamplePoints)], y = out$PDF, type = 'l',
+  out <- list(epdf = epdf, ecdf = ecdf, sample.points = sample.points,
+              mean = avg, var = variance, skew = skew, kurtosis = kurt)
+
+  if (plot == TRUE) {
+      plot(x = sample.interp, y = out$pdf, type = 'l',
            xlab = 'target variable', ylab = 'probability')
-    }
-    return(out)
   }
+
+  return(out)
+
 }
