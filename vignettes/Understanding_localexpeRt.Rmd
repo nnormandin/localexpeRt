@@ -13,8 +13,9 @@ vignette: >
 
 The method implemented in this package is for use in machine learning tasks involving the prediction of a continuous variable. While there are many choices available for regression algorithms, Binary Local Expert Regression is novel in a few ways:
 
-* the concept of stacked regression, or "stacking" is used to train multiple layers of models
-* the continuous target variable is transformed into many discrete (specifically binary) target variables
+* it's an ensemble, meaning the predictions of many models are combined
+* the concept of stacked regression, or "stacking" is used to train multiple layers of models (ie: meta-feature learning)
+* the continuous target variable is transformed into many discrete (specifically binary) target variables, decomposing the original problem into many simpler problems
 * local expert predictions are reconstructed to form a unique predicted target variable distribution for each instance
 
 ## Data
@@ -179,20 +180,21 @@ x.new.LEs <- PredictLEs(x.new, model.list)
 # fit the local expert CDF
 x.new.fit <- FitInstance(x.new.LEs, y.cols$y.vals, plot = TRUE)
 
-#
+# 
 
 ```
 
 
 #### The short way
 
-```{r}
+```{r, eval = FALSE}
 
 # receive new data, pick a random row to predict
 x.new <- solTestXtrans[sample(seq(1, length(solTestXtrans)),1),]
 
 y.new <- PredictNew(x = x.new, LE.model.list = model.list, stack.model = L1.model,
                     y.vals = y.cols$y.vals, plot = TRUE)
+
 
 ```
 

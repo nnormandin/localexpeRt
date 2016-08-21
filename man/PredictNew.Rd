@@ -4,8 +4,8 @@
 \alias{PredictNew}
 \title{Predict response of new instance using local expert ensemble with stacking}
 \usage{
-PredictNew(x, LE.model.list, stack.model, y.vals, mode = "CDF",
-  plot = FALSE, verbose = FALSE, ...)
+PredictNew(x, LE.model.list, stack.model, y.vals, plot = FALSE,
+  verbose = FALSE, df = 10, ...)
 }
 \arguments{
 \item{x}{Attribute vector of new instance to be predicted}
@@ -16,11 +16,11 @@ PredictNew(x, LE.model.list, stack.model, y.vals, mode = "CDF",
 
 \item{y.vals}{Y-values from BinCols function}
 
-\item{mode}{Choose whether probability output is in CDF or PDF format}
-
 \item{plot}{Display plot of LE predictions and stack estimate}
 
 \item{verbose}{Determines whether prediction information is printed}
+
+\item{df}{Degrees of freedom to pass spline if plotting}
 
 \item{...}{Additional arguments to pass to the FitInstance function}
 }

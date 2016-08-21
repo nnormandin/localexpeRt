@@ -4,19 +4,16 @@
 \alias{FitInstance}
 \title{Fit a CDF to a row of local expert predictions}
 \usage{
-FitInstance(row, y.values, granularity = 100, df = 10, mode = "CDF",
-  plot = FALSE)
+FitInstance(LE.preds, y.values, granularity = 1000, df = 10, plot = FALSE)
 }
 \arguments{
-\item{row}{Vector of LE predictions}
+\item{LE.preds}{Vector of LE predictions}
 
 \item{y.values}{Y-values from BinCols function}
 
 \item{granularity}{Number of interpolation points in fitting; defaults to 100}
 
 \item{df}{Degrees of freedom in smoothing spline; defaults to 10}
-
-\item{mode}{Choose whether probability output is in CDF or PDF format}
 
 \item{plot}{Plot output; defaults to FALSE}
 }
