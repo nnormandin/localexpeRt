@@ -9,6 +9,7 @@
 
 
 PlotLEs <- function(model.info){
+  opar <- par()
   par(mfrow = c(2,2))
   plot(model.info$performance$accuracy, xaxt = 'n', xlab = '', ylab = 'accuracy', pch = 16)
   plot(model.info$performance$kappa, xaxt = 'n', xlab = '', ylab = 'kappa', pch = 17)
@@ -19,4 +20,5 @@ PlotLEs <- function(model.info){
   print(paste("The minimum kappa is", format(min(model.info$performance$kappa), digits = 3)))
   print(paste("The average kappa is", format(mean(model.info$performance$kappa), digits = 3)))
   par(mfrow = c(1,1))
+  suppressWarnings(par(opar))
 }
