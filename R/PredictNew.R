@@ -42,7 +42,8 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
   if(plot == TRUE){
 
     # save current graph parameters
-    suppressWarnings(opar <- par())
+    opar <- par(no.readonly = TRUE)
+    on.exit(par(opar))
 
     # change to double plot
     par(mfrow = c (2,1))
@@ -61,8 +62,6 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
     plot(x = instance.fit$sample.points, y = instance.fit$ecdf, type = 'l')
     lines(x = y.vals, y = LE.preds, type = 'p')
 
-    # restore original parameters
-    suppressWarnings(par(opar))
     }
 
   # 5) output point prediction, LE predictions, var

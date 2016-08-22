@@ -9,8 +9,9 @@
 
 
 PlotLEs <- function(model.info){
-  suppressWarnings(opar <- par())
-  suppressWarnings(par(mfrow = c(2,2)))
+  opar <- par(no.readonly = TRUE)
+  on.exit(par(opar))
+  par(mfrow = c(2,2))
   plot(model.info$performance$accuracy, xaxt = 'n', xlab = '', ylab = 'accuracy', pch = 16)
   plot(model.info$performance$kappa, xaxt = 'n', xlab = '', ylab = 'kappa', pch = 17)
   plot(model.info$performance$accuracySD, ylab = 'accuracy stdev', xlab = 'Local Experts', pch = 16)
@@ -19,6 +20,4 @@ PlotLEs <- function(model.info){
   print(paste("The average accuracy is", format(mean(model.info$performance$accuracy), digits = 3)))
   print(paste("The minimum kappa is", format(min(model.info$performance$kappa), digits = 3)))
   print(paste("The average kappa is", format(mean(model.info$performance$kappa), digits = 3)))
-  par(mfrow = c(1,1))
-  suppressWarnings(par(opar))
 }

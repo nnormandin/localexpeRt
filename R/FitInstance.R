@@ -53,10 +53,13 @@ FitInstance <- function(LE.preds, y.values, granularity = 1000, df = 10, plot = 
               mean = avg, var = variance, skew = skew, kurtosis = kurt)
 
   if (plot == TRUE) {
-      suppressWarnings(opar <- par())
-      plot(x = sample.interp, y = out$pdf, type = 'l',
+
+    # save graphical parameters
+    opar <- par(no.readonly = TRUE)
+    on.exit(par(opar))
+
+    plot(x = sample.interp, y = out$pdf, type = 'l',
            xlab = 'target variable', ylab = 'probability')
-      suppressWarnings(par(opar))
   }
 
   return(out)
