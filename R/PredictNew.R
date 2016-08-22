@@ -40,12 +40,29 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
   stack.pred <- predict(stack.model, newdata = x1)
 
   if(plot == TRUE){
-    plot(x = y.vals, y = LE.preds)
+
+    # save current graph parameters
+    opar <- par()
+
+    # change to double plot
+    par(mfrow = c (2,1))
+
+    # calculate midpoints in samples for PDF
+    sample.interp <- (instance.fit$sample.points[1:length(instance.fit$sample.points)-1]
+                      + instance.fit$sample.points[2:length(instance.fit$sample.points)])/2
+
+    # plot pdf with line at y.hat and label
+    plot(x = sample.interp, y = instance.fit$epdf, type = 'l')
     abline(v = stack.pred)
-    smooth <- smooth.spline(y = LE.preds, x = y.vals, df = df)
-    lines(smooth)
-    text(y = 0.2, x = stack.pred, pos = 4,
+    text(y = max(instance.fit$epdf)/10, x = stack.pred, pos = 2,
          labels = paste0('y.hat = ', format(stack.pred, digits = 4)))
+
+    # plot LE predictions with smooth ECDF overlay
+    plot(x = instance.fit$sample.points, y = instance.fit$ecdf, type = 'l')
+    lines(x = y.vals, y = LE.preds, type = 'p')
+
+    # restore original parameters
+    suppressWarnings(par(opar))
     }
 
   # 5) output point prediction, LE predictions, var
