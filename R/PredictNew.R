@@ -42,7 +42,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
   if(plot == TRUE){
 
     # save current graph parameters
-    opar <- par()
+    suppressWarnings(opar <- par())
 
     # change to double plot
     par(mfrow = c (2,1))

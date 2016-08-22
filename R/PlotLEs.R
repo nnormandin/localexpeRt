@@ -10,7 +10,7 @@
 
 PlotLEs <- function(model.info){
   opar <- par()
-  par(mfrow = c(2,2))
+  suppressWarnings(par(mfrow = c(2,2)))
   plot(model.info$performance$accuracy, xaxt = 'n', xlab = '', ylab = 'accuracy', pch = 16)
   plot(model.info$performance$kappa, xaxt = 'n', xlab = '', ylab = 'kappa', pch = 17)
   plot(model.info$performance$accuracySD, ylab = 'accuracy stdev', xlab = 'Local Experts', pch = 16)
