@@ -57,6 +57,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
     par(mar = c(0, 2.1, 4.1, 2.1))
     plot(x = sample.interp, y = instance.fit$epdf, type = 'l', main='',
          xlab = '', yaxt = 'n',ylab = '', xaxt = 'n')
+    mtext(text = "farts")
     abline(v = stack.pred)
     text(y = max(instance.fit$epdf)/10, x = stack.pred, pos = 2, cex = 0.8,
          labels = paste0('y.hat = ', format(stack.pred, digits = 4)))
@@ -70,6 +71,9 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
     HDI.ids <- which(prob.mass >= HDI.height)
     x0 <- sample.interp[min(HDI.ids)]
     x1 <- sample.interp[max(HDI.ids)]
+    print(paste0("Estimate of y value is ", format(stack.pred, digits = 4),
+                  " with a ", (cred*100), "% HDI in the interval (",
+                 format(x0, digits = 4), ", ", format(x1, digits = 4), ")"  ))
 
     # make line segment at HDI
     segments(x0 = x0, y0 = max(instance.fit$epdf),
