@@ -196,8 +196,7 @@ y.new <- predict(L1.model, newdata = t(x1))
 x.new <- solTestXtrans[sample(seq(solTestXtrans),1),]
 
 y.new <- PredictNew(x = x.new, LE.model.list = model.list, stack.model = L1.model,
-                    y.vals = y.cols$y.vals, plot = TRUE)
-
+                    y.vals = y.cols$y.vals, plot = TRUE, cred = 0.5)
 
 ```
 

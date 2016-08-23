@@ -8,6 +8,7 @@
 #' @param plot Display plot of LE predictions and stack estimate
 #' @param verbose Determines whether prediction information is printed
 #' @param df Degrees of freedom to pass spline if plotting
+#' @param cred Credibility interval for HDI in plot
 #' @param ... Additional arguments to pass to the FitInstance function
 #' @keywords predict
 #' @export
@@ -15,7 +16,7 @@
 #'
 
 PredictNew <- function(x, LE.model.list, stack.model, y.vals,
-                       plot = FALSE, verbose = FALSE, df = 10, ...){
+                       plot = FALSE, verbose = FALSE, df = 10, cred, ...){
 
   # 1) pass x vector through all LEs to get prediction
 
@@ -53,14 +54,34 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
                       + instance.fit$sample.points[2:length(instance.fit$sample.points)])/2
 
     # plot pdf with line at y.hat and label
-    plot(x = sample.interp, y = instance.fit$epdf, type = 'l')
+    par(mar = c(0, 2.1, 4.1, 2.1))
+    plot(x = sample.interp, y = instance.fit$epdf, type = 'l', main='',
+         xlab = '', yaxt = 'n',ylab = '', xaxt = 'n')
     abline(v = stack.pred)
-    text(y = max(instance.fit$epdf)/10, x = stack.pred, pos = 2,
+    text(y = max(instance.fit$epdf)/10, x = stack.pred, pos = 2, cex = 0.8,
          labels = paste0('y.hat = ', format(stack.pred, digits = 4)))
 
+    # generate HDI
+    prob.mass <- instance.fit$epdf/sum(instance.fit$epdf)
+    sorted.mass <- sort(prob.mass, decreasing = TRUE)
+    HDI.height.id <- min(which(cumsum(sorted.mass) >= cred))
+    HDI.height <- sorted.mass[HDI.height.id]
+    HDI.mass <- sum(prob.mass[prob.mass >= HDI.height])
+    HDI.ids <- which(prob.mass >= HDI.height)
+    x0 <- sample.interp[min(HDI.ids)]
+    x1 <- sample.interp[max(HDI.ids)]
+
+    # make line segment at HDI
+    segments(x0 = x0, y0 = max(instance.fit$epdf),
+             x1 = x1, y1 = max(instance.fit$epdf))
+
+
     # plot LE predictions with smooth ECDF overlay
-    plot(x = instance.fit$sample.points, y = instance.fit$ecdf, type = 'l')
+    par(mar = c(2.1, 2.1, 0, 2.1))
+    plot(x = instance.fit$sample.points, y = instance.fit$ecdf, type = 'l',
+         main='', xlab = 'response', ylab = '', yaxt = 'n')
     lines(x = y.vals, y = LE.preds, type = 'p')
+
 
     }
 

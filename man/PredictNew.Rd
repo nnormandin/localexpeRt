@@ -5,7 +5,7 @@
 \title{Predict response of new instance using local expert ensemble with stacking}
 \usage{
 PredictNew(x, LE.model.list, stack.model, y.vals, plot = FALSE,
-  verbose = FALSE, df = 10, ...)
+  verbose = FALSE, df = 10, cred, ...)
 }
 \arguments{
 \item{x}{Attribute vector of new instance to be predicted}
@@ -21,6 +21,8 @@ PredictNew(x, LE.model.list, stack.model, y.vals, plot = FALSE,
 \item{verbose}{Determines whether prediction information is printed}
 
 \item{df}{Degrees of freedom to pass spline if plotting}
+
+\item{cred}{Credibility interval for HDI in plot}
 
 \item{...}{Additional arguments to pass to the FitInstance function}
 }
