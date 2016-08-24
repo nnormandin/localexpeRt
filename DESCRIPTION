@@ -15,5 +15,6 @@ License: GPL
 LazyData: true
 RoxygenNote: 5.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    gbm
 VignetteBuilder: knitr
