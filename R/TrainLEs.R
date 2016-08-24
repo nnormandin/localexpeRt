@@ -16,7 +16,7 @@
 TrainLEs <- function(x, bincols, trControl = NULL,
                      method = "lda",
                      n.repeats = 5,
-                     metric = "Accuracy",
+                     metric = "Kappa",
                      ...){
 
   if(is.null(trControl)){

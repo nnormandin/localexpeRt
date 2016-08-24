@@ -54,13 +54,14 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
                       + instance.fit$sample.points[2:length(instance.fit$sample.points)])/2
 
     # plot pdf with line at y.hat and label
+    dig <- 3
     par(mar = c(0, 2.1, 4.1, 2.1))
     plot(x = sample.interp, y = instance.fit$epdf, type = 'l', main='',
          xlab = '', yaxt = 'n',ylab = '', xaxt = 'n')
-    mtext(text = "farts")
-    abline(v = stack.pred)
+    abline(v = stack.pred, lty = 2)
+    abline(v = instance.fit$mean, lty = 3)
     text(y = max(instance.fit$epdf)/10, x = stack.pred, pos = 2, cex = 0.8,
-         labels = paste0('y.hat = ', format(stack.pred, digits = 4)))
+         labels = paste0('y.hat = ', format(stack.pred, digits = dig)))
 
     # generate HDI
     prob.mass <- instance.fit$epdf/sum(instance.fit$epdf)
@@ -71,14 +72,19 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
     HDI.ids <- which(prob.mass >= HDI.height)
     x0 <- sample.interp[min(HDI.ids)]
     x1 <- sample.interp[max(HDI.ids)]
-    dig <- 3
     print(paste0("Estimate of y value is ", format(stack.pred, digits = dig),
                   " with a ", (cred*100), "% HDI in the interval (",
                  format(x0, digits = dig), ", ", format(x1, digits = dig), ")"  ))
 
-    # make line segment at HDI
-    segments(x0 = x0, y0 = max(instance.fit$epdf),
-             x1 = x1, y1 = max(instance.fit$epdf))
+    # make shaded polygon over HDI
+    seg.height <- max(instance.fit$epdf)
+    poly.x <- c(x0, x1, x1, x0)
+    poly.y <- c(seg.height, seg.height, 0, 0)
+    polygon(x = poly.x, y = poly.y,
+            col = rgb(0, .2, .2, .2), border = NA)
+
+    #segments(x0 = x0, y0 = seg.height,
+    #        x1 = x1, y1 = seg.height)
 
 
     # plot LE predictions with smooth ECDF overlay
