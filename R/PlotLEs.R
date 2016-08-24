@@ -16,8 +16,8 @@ PlotLEs <- function(model.info){
   plot(model.info$performance$kappa, xaxt = 'n', xlab = '', ylab = 'kappa', pch = 17)
   plot(model.info$performance$accuracySD, ylab = 'accuracy stdev', xlab = 'Local Experts', pch = 16)
   plot(model.info$performance$kappaSD, ylab = 'kappa stdev', xlab = 'Local Experts', pch = 17)
-  print(paste("The maximum accuracy is", format(max(model.info$performance$accuracy), digits = 3)))
-  print(paste("The average accuracy is", format(mean(model.info$performance$accuracy), digits = 3)))
-  print(paste("The minimum kappa is", format(min(model.info$performance$kappa), digits = 3)))
-  print(paste("The average kappa is", format(mean(model.info$performance$kappa), digits = 3)))
+  cat(paste("The maximum accuracy is", format(max(model.info$performance$accuracy), digits = 3), "\n"))
+  cat(paste("The average accuracy is", format(mean(model.info$performance$accuracy), digits = 3), "\n"))
+  cat(paste("The minimum kappa is", format(min(model.info$performance$kappa), digits = 3), "\n"))
+  cat(paste("The average kappa is", format(mean(model.info$performance$kappa), digits = 3), "\n\n"))
 }

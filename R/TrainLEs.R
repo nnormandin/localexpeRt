@@ -6,13 +6,18 @@
 #' @param trControl Optional argument to specify a train control object- defaults to cross validated
 #' @param n.repeats Number of repeats if default train control object is used- defaults to 5
 #' @param method Type of learning algorithm used for induction- defaults to lda
+#' @param metric Optimization metric; can be either "Accuracy" or "Kappa"
 #' @param ... Additional parameters to pass to model training function
 #' @keywords train
 #' @export
 #' @examples
 #'
 
-TrainLEs <- function(x, bincols, trControl = NULL, method = "lda", n.repeats = 5, ...){
+TrainLEs <- function(x, bincols, trControl = NULL,
+                     method = "lda",
+                     n.repeats = 5,
+                     metric = "Accuracy",
+                     ...){
 
   if(is.null(trControl)){
     trControl <- caret::trainControl(method = "cv", number = n.repeats,
@@ -23,7 +28,8 @@ TrainLEs <- function(x, bincols, trControl = NULL, method = "lda", n.repeats = 5
   trainer <- function(y){
     ## TODO: start parallel and stop at end of each train
     set.seed(123)
-    mod <- caret::train(x = x, y = y, method = method, trControl = trControl, ...)}
+    mod <- caret::train(x = x, y = y, method = method,
+                        metric = metric, trControl = trControl, ...)}
   models <- lapply(bincols, trainer)
   t.final <- proc.time() - t.0
   print(t.final)

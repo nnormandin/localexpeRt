@@ -23,9 +23,10 @@ The method implemented in this package is for use in machine learning tasks invo
 In this example I will use Quantitative Structure-Activity Relationship (QSAR) data from Max Kuhn's `AppliedPredictiveModeling` package. QSAR modeling is used to predict the properties of chemical compounds (eg. to determine feasibility of a compound's medicinal use).
 
 ```{r message = FALSE}
-require(AppliedPredictiveModeling)
-require(localexpeRt)
-## TODO: add gbm package dependency
+library(AppliedPredictiveModeling)
+library(localexpeRt)
+library(car)
+library(gbm)
 
 # bring data into environment
 data(solubility)
@@ -99,6 +100,7 @@ The decision of `n` (the number of columns/models to use) and EP vs EW binning m
 # use equally probable, output 20 columns
 y.cols <- BinCols(y, n = 20, mode = 'EW')
 ```
+
 
 
 
