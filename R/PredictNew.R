@@ -60,8 +60,8 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
          xlab = '', yaxt = 'n',ylab = '', xaxt = 'n')
     abline(v = stack.pred, lty = 2)
     abline(v = instance.fit$mean, lty = 3)
-    text(y = max(instance.fit$epdf)/10, x = stack.pred, pos = 2, cex = 0.8,
-         labels = paste0('y.hat = ', format(stack.pred, digits = dig)))
+    #text(y = max(instance.fit$epdf)/10, x = stack.pred, pos = 2, cex = 0.8,
+    #     labels = paste0('y.hat = ', format(stack.pred, digits = dig)))
 
     # generate HDI
     prob.mass <- instance.fit$epdf/sum(instance.fit$epdf)
@@ -92,6 +92,11 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
     plot(x = instance.fit$sample.points, y = instance.fit$ecdf, type = 'l',
          main='', xlab = 'response', ylab = '', yaxt = 'n')
     lines(x = y.vals, y = LE.preds, type = 'p')
+    poly.y2 <- c(1, 1, 0, 0)
+    polygon(x = poly.x, y = poly.y2,
+            col = rgb(0, .2, .2, .2), border = NA)
+    abline(v = stack.pred, lty = 2)
+    abline(v = instance.fit$mean, lty = 3)
 
 
     }
