@@ -71,9 +71,10 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
     HDI.ids <- which(prob.mass >= HDI.height)
     x0 <- sample.interp[min(HDI.ids)]
     x1 <- sample.interp[max(HDI.ids)]
-    print(paste0("Estimate of y value is ", format(stack.pred, digits = 4),
+    dig <- 3
+    print(paste0("Estimate of y value is ", format(stack.pred, digits = dig),
                   " with a ", (cred*100), "% HDI in the interval (",
-                 format(x0, digits = 4), ", ", format(x1, digits = 4), ")"  ))
+                 format(x0, digits = dig), ", ", format(x1, digits = dig), ")"  ))
 
     # make line segment at HDI
     segments(x0 = x0, y0 = max(instance.fit$epdf),

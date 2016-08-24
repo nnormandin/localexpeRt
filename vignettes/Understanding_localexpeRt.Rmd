@@ -97,7 +97,7 @@ The decision of `n` (the number of columns/models to use) and EP vs EW binning m
 ```{r, eval = FALSE} 
 # convert the response into binary columns
 # use equally probable, output 20 columns
-y.cols <- BinCols(y, n = 30, mode = 'EW')
+y.cols <- BinCols(y, n = 20, mode = 'EW')
 ```
 
 
@@ -114,7 +114,7 @@ abline(v = y.cols$y.vals)
 ```{r, eval = FALSE}
 # train Local Experts on each of the binary columns
 # use default train control object with Support Vector Machines algorithm and linear kernel
-model.list <- TrainLEs(x, y.cols$cols, method = 'lda')
+model.list <- TrainLEs(x, y.cols$cols, method = 'gbm')
 
 # examine ensemble performance by extracting all model info
 model.info <- ExtractModelInfo(model.list)
