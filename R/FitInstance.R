@@ -58,7 +58,7 @@ FitInstance <- function(LE.preds, y.values, granularity = 1000, df = 10, plot = 
     opar <- par(no.readonly = TRUE)
     on.exit(par(opar))
 
-    plot(x = sample.interp, y = out$pdf, type = 'l',
+    plot(x = sample.interp, y = out$epdf, type = 'l',
            xlab = 'target variable', ylab = 'probability')
   }
 

@@ -81,6 +81,41 @@ ExtractKappaSD <- function(model){
   KappaSD <- model$KappaSD
   return(KappaSD)}
 
+#' Calculate HDI
+#'
+#' Takes vector of pdf sample points and corresponding target variable values to
+#' calculate the HDI at desired confidence level
+#' @param sample.points Vector of target variable values corresponding to pdf
+#' @param epdf Vector of epdf sample point values
+#' @param cred Confidence level
+#' @keywords model
+#' @export
+
+CalcHDI <- function(sample.points, epdf, cred = 0.90){
+
+  # check lengths
+  if(length(sample.points) != length(epdf)){
+    cat("Sample point and PDF vectors are of unequal lengths\n")
+
+    # if length is off by one, do interpolation automatically
+    if(length(sample.points)-1 == length(epdf)){
+      cat("Calculating sample points interpolation vector...\n\n")
+      sample.points <- (sample.points[1:length(sample.points)-1]
+                        + sample.points[2:length(sample.points)])/2
+    }
+  }
+
+  prob.mass <- epdf/sum(epdf)
+  sorted.mass <- sort(prob.mass, decreasing = TRUE)
+  HDI.height.id <- min(which(cumsum(sorted.mass) >= cred))
+  HDI.height <- sorted.mass[HDI.height.id]
+  HDI.mass <- sum(prob.mass[prob.mass >= HDI.height])
+  HDI.ids <- which(prob.mass >= HDI.height)
+  x0 <- sample.points[min(HDI.ids)]
+  x1 <- sample.points[max(HDI.ids)]
+  out <- list(interval = c(x0, x1))
+  return(out)
+}
 
 
 # function to calculate variable importance- TODO: validate VARIMP capability of base learner
