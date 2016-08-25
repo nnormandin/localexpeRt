@@ -1,6 +1,6 @@
 Package: localexpeRt
 Title: Binary Local Expert Regression
-Version: 0.1
+Version: 0.0.0.9000
 Authors@R: person("Nicholas", "Normandin", email = "nicholas.e.normandin@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends:

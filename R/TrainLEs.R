@@ -17,21 +17,38 @@ TrainLEs <- function(x, bincols, trControl = NULL,
                      method = "lda",
                      n.repeats = 5,
                      metric = "Kappa",
+                     JIT = FALSE,
                      ...){
 
+  # enable just-in-time compilation
+  if(JIT = TRUE){
+    enableJIT(3)
+    on.exit(enableJIT(0))
+  }
+
+  # default train control function if one is not specified
   if(is.null(trControl)){
     trControl <- caret::trainControl(method = "cv", number = n.repeats,
                                returnData = FALSE,
                                savePredictions = TRUE,
                                classProbs = TRUE)}
+
+  # start timer
   t.0 = proc.time()
+
+  # base function to train LEs
   trainer <- function(y){
-    ## TODO: start parallel and stop at end of each train
     set.seed(123)
     mod <- caret::train(x = x, y = y, method = method,
                         metric = metric, trControl = trControl, ...)}
+
+  # apply trainer across all columns
   models <- lapply(bincols, trainer)
+
+  # stop timer, display time
   t.final <- proc.time() - t.0
   print(t.final)
 
-  return(models)}
+  # output model list
+  return(models)
+  }

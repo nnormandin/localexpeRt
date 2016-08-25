@@ -23,9 +23,10 @@ The method implemented in this package is for use in machine learning tasks invo
 In this example I will use Quantitative Structure-Activity Relationship (QSAR) data from Max Kuhn's `AppliedPredictiveModeling` package. QSAR modeling is used to predict the properties of chemical compounds (eg. to determine feasibility of a compound's medicinal use).
 
 ```{r message = FALSE}
+# load required libraries
 library(AppliedPredictiveModeling)
 library(localexpeRt)
-library(car)
+library(caret)
 library(gbm)
 
 # bring data into environment
@@ -52,8 +53,9 @@ sum(sapply(x, function(x) sum(is.na(x))))
 
 The target variable we are trying to predict is the solubility of a compound. Let's take a look at how it is distributed in our 951 instances.
 
-```{r, fig.width=6}
-hist(y, main = '', xlab = 'Solubility', breaks = 40)
+```{r, fig.width=6, fig.align = 'center'}
+hist(y, main = '', xlab = 'Solubility', breaks = 40,
+     border = NA, col = rgb(0, 0.2, 0.2, 0.2))
 ```
 
 ## Training a traditional regression model
@@ -62,12 +64,14 @@ Before going into the specifics of the `localexpeRt` method, we will demonstrate
 
 The `train` function is used to fit models to data. We'll specify a linear model (ordinary least squares) and leave the `trControl` argument blank for now (this will default to using 25 bootstrap samples).
 
-```{r, warning=FALSE}
-require(caret, quietly = TRUE)
+```{r, message=FALSE, warning=FALSE}
+# train a linear model
 linear.model <- train(x, y, method = 'lm')
-class(linear.model) # determine object type
-linear.model$results$Rsquared # check model performance
+
+# check model performance
+linear.model$results$Rsquared
 ```
+
 
 Note that this is roughly equivalent to the very common `lm(y ~ x)`, but allows us to use a standard format and leverage the powerful pre-processing and testing tools available to `caret`. You can explore the remarkable amount of information stored in the `train` object by executing `str(linear.model)`.
 
@@ -92,28 +96,36 @@ We will accomplish the binary encoding using indicator functions with criteria v
   
   2. Equally Probable (EP) Intervals: break points are placed at equally wide _quantiles_ of the target. The advantage to this method is that an equal number of instances is between each break point, making it easy to understand the extent of class imbalance in each separate modeling task. A disadvantage to this method is that it may produce less reliable estimates of outliers if there are long tails in the target variable distribution.
   
-The decision of `n` (the number of columns/models to use) and EP vs EW binning may require experimentation. Results (in terms of final model regression accuracy) differ depending on the local expert model family, meta-features included, and regression stacking model family. In this example, we will use 30 EP break points
+The decision of `n` (the number of columns/models to use) and EP vs EW binning may require experimentation. Results (in terms of final model regression accuracy) differ depending on the local expert model family, meta-features included, and regression stacking model family. In this example, we will use 20 EW break points.
 
 
-```{r, eval = FALSE} 
+```{r} 
 # convert the response into binary columns
 # use equally probable, output 20 columns
 y.cols <- BinCols(y, n = 20, mode = 'EW')
 ```
 
 
+The `BinCols` function returns a list with two main values:
 
+  1. The `y.vals` object is a list containing the values of the target variable corresponding to the `n` break points
+  2. The `cols` object is a data frame consisting of the transformed binary response vectors that are used to train the local expert models
 
-```{r, eval = FALSE}
+We can look at the histogram of the target variable again, with verticle lines at each of the break points. Each line represents a different local expert function, which will classify instances based on whether their associated target variable value is to the left or right of the associated line.
+
+```{r, fig.width = 6, fig.align = 'center'}
 # examine breakpoints over histogram of response
-hist(y, main = '', xlab = 'Solubility')
+hist(y, main = '', xlab = 'Solubility', breaks = 40,
+     border = NA, col = rgb(0, 0.2, 0.2, 0.2))
 abline(v = y.cols$y.vals)
 ```
 
 
 #### Train local experts
 
-```{r, eval = FALSE}
+
+
+```{r, fig.width = 6, fig.align = 'center'}
 # train Local Experts on each of the binary columns
 # use default train control object with Support Vector Machines algorithm and linear kernel
 model.list <- TrainLEs(x, y.cols$cols, method = 'gbm')
@@ -128,7 +140,7 @@ PlotLEs(model.info)
 
 #### Smooth prediction distributions
 
-```{r, eval = FALSE}
+```{r}
 # examine the fit of a random instance
 instance.id <- sample(seq(1, nrow(model.info$preds.matrix)),1)
 instance.check <- FitInstance(model.info$preds.matrix[instance.id,],
@@ -144,7 +156,7 @@ LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
 
 #### Create stacking input data frame
 
-```{r, eval = FALSE}
+```{r}
 # create meta feature input matrix for stacked regression model
 meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean))
 meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
@@ -154,7 +166,7 @@ colnames(meta.x) <- cnames
 
 #### Build a stacked model
 
-```{r, eval = FALSE}
+```{r}
 # test a regression model
 # create train control object
 trControl <- trainControl(method = "cv", number = 10,
@@ -171,7 +183,7 @@ L1.model <- train(x = meta.x, y = y, method = 'gbm', trControl = trControl)
 
 #### The long way
 
-```{r, eval = FALSE}
+```{r}
 
 # receive new data, pick a random row to predict
 x.new <- solTestXtrans[sample(seq(solTestXtrans),1),]
@@ -192,7 +204,7 @@ y.new <- predict(L1.model, newdata = t(x1))
 
 #### The short way
 
-```{r, eval = FALSE}
+```{r}
 
 # receive new data, pick a random row to predict
 x.new <- solTestXtrans[sample(seq(solTestXtrans),1),]
@@ -208,7 +220,7 @@ y.new <- PredictNew(x = x.new, LE.model.list = model.list, stack.model = L1.mode
 
 
 
-
+ 
 
 
 

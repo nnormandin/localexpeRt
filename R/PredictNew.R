@@ -88,7 +88,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
 
 
     # plot LE predictions with smooth ECDF overlay
-    par(mar = c(2.1, 2.1, 0, 2.1))
+    par(mar = c(4.1, 2.1, 0, 2.1))
     plot(x = instance.fit$sample.points, y = instance.fit$ecdf, type = 'l',
          main='', xlab = 'response', ylab = '', yaxt = 'n')
     lines(x = y.vals, y = LE.preds, type = 'p')
