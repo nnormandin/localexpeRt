@@ -7,6 +7,7 @@
 #' @param n.repeats Number of repeats if default train control object is used- defaults to 5
 #' @param method Type of learning algorithm used for induction- defaults to lda
 #' @param metric Optimization metric; can be either "Accuracy" or "Kappa"
+#' @param JIT Whether or not just-in-time compilation is enabled
 #' @param ... Additional parameters to pass to model training function
 #' @keywords train
 #' @export
@@ -22,8 +23,8 @@ TrainLEs <- function(x, bincols, trControl = NULL,
 
   # enable just-in-time compilation
   if(JIT == TRUE){
-    enableJIT(3)
-    on.exit(enableJIT(0))
+    compiler::enableJIT(3)
+    on.exit(compiler::enableJIT(0))
   }
 
   # default train control function if one is not specified

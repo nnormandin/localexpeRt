@@ -18,6 +18,9 @@
 PredictNew <- function(x, LE.model.list, stack.model, y.vals,
                        plot = FALSE, verbose = FALSE, df = 10, cred, ...){
 
+  # make sure the nubmer of models and the number of y.vals are correct
+  CheckLengths(LE.model.list, y.vals)
+
   # 1) pass x vector through all LEs to get prediction
 
   LE.preds <- PredictLEs(x, LE.model.list)

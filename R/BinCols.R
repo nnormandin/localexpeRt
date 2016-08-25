@@ -1,7 +1,7 @@
 #' Binary columns function
 #'
 #' This function transforms a continuous target vector into a series of binary target vectors
-#' @param x The column to be binarized
+#' @param y The column to be binarized
 #' @param n The number of columns in the resulting binary matrix
 #' @param mode Defaults to 'EW' intervals, but 'EP' is also available
 #' @param EW.buffer Defaults to 0.01, only for EW testing; excludes outliers from width
@@ -13,7 +13,7 @@
 #'
 
 
-BinCols <- function(x, n = 30, mode = 'EW', EW.buffer = 0.01){
+BinCols <- function(y, n = 30, mode = 'EW', EW.buffer = 0.01){
 
   # binarize columns with equal quantiles
   if(mode == 'EP'){
@@ -21,10 +21,10 @@ BinCols <- function(x, n = 30, mode = 'EW', EW.buffer = 0.01){
     # set quantile values from 0 to 1; save quantiles and corresponding y-value
     increment = (1/ (n +1))
     prob.values <- seq(from = increment, to = 1-increment, by = increment)
-    y.values <- quantile(x, probs = prob.values)
+    y.values <- quantile(y, probs = prob.values)
 
     # apply indicator function, generating binary column for each quantile
-    binary.cols <- as.data.frame(lapply(y.values, function(i) ifelse(x >= i, "UP", "DOWN")))
+    binary.cols <- as.data.frame(lapply(y.values, function(i) ifelse(y >= i, "UP", "DOWN")))
 
     # rename columns
     bin.names <-paste("c", seq(1, n), sep = '')
@@ -38,13 +38,13 @@ BinCols <- function(x, n = 30, mode = 'EW', EW.buffer = 0.01){
   if(mode == 'EW'){
 
     # save y.values
-    a <- quantile(x, probs = EW.buffer)
-    b <- quantile(x, probs = 1-EW.buffer)
+    a <- quantile(y, probs = EW.buffer)
+    b <- quantile(y, probs = 1-EW.buffer)
     y.values <- seq(from = a,
                     to = b, length.out = n)
 
     # apply indicator function, generating binary column for each quantile
-    binary.cols <- as.data.frame(lapply(y.values, function(i) ifelse(x >= i, "UP", "DOWN")))
+    binary.cols <- as.data.frame(lapply(y.values, function(i) ifelse(y >= i, "UP", "DOWN")))
 
     # rename columns
     bin.names <-paste("c", seq(1, n), sep = '')

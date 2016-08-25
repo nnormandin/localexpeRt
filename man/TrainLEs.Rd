@@ -20,6 +20,8 @@ TrainLEs(x, bincols, trControl = NULL, method = "lda", n.repeats = 5,
 
 \item{metric}{Optimization metric; can be either "Accuracy" or "Kappa"}
 
+\item{JIT}{Whether or not just-in-time compilation is enabled}
+
 \item{...}{Additional parameters to pass to model training function}
 }
 \description{

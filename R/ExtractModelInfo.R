@@ -3,6 +3,7 @@
 #' This function extracts the performance information and best predictions from a model list
 #' @param model.list List of models trained using the TrainLEs function
 #' @keywords model, predictions, train
+#' @import data.table
 #' @export
 #' @examples
 #'
@@ -10,7 +11,7 @@
 ExtractModelInfo <- function(model.list){
 
   # error if model.list is not correct
-  CheckModelList(LE.model.list)
+  CheckModelList(model.list)
 
   # take raw performance data and make it a data frame
   performance <- lapply(model.list, ExtractPerformance)

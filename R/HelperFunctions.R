@@ -3,6 +3,7 @@
 #' Extracts best predictions from each resample from cv data
 #' @param model The model to extract predictions from
 #' @keywords model
+#' @import data.table
 #' @export
 #'
 
@@ -29,6 +30,7 @@ ExtractDownProbs <- function(model){
 #' Extracts all performance data from best model
 #' @param model The model to extract performance from
 #' @keywords model
+#' @import data.table
 #' @export
 
 ExtractPerformance <- function(model){
@@ -117,10 +119,12 @@ CalcHDI <- function(sample.points, epdf, cred = 0.90){
   return(out)
 }
 
-#' Check model.list object
+
+
+#' Check model list object
 #'
 #' Ensures model.list object contains all `train` objects
-#' @param model.list
+#' @param model.list List of model objects from TrainLEs function
 #' @keywords model
 #' @export
 
@@ -137,17 +141,22 @@ CheckModelList <- function(model.list){
   }
   }
 
-  prob.mass <- epdf/sum(epdf)
-  sorted.mass <- sort(prob.mass, decreasing = TRUE)
-  HDI.height.id <- min(which(cumsum(sorted.mass) >= cred))
-  HDI.height <- sorted.mass[HDI.height.id]
-  HDI.mass <- sum(prob.mass[prob.mass >= HDI.height])
-  HDI.ids <- which(prob.mass >= HDI.height)
-  x0 <- sample.points[min(HDI.ids)]
-  x1 <- sample.points[max(HDI.ids)]
-  out <- list(interval = c(x0, x1))
-  return(out)
+
+#' Check list lengths
+#'
+#' Ensures two objects are the same length
+#' @param model.list List of model objects from TrainLEs function
+#' @param y.vals Vector of y values being passed
+#' @keywords model
+#' @export
+
+CheckLengths <- function(model.list, y.vals){
+
+  if(length(model.list) != length(y.vals)){
+    stop('Objects are of unequal lengths- check model list and y-values')
+  }
 }
+
 # function to calculate variable importance- TODO: validate VARIMP capability of base learner
 # ExtractVarImp <- function(model){
 #  importance <- varImp(model)$importance$Overall

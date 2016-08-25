@@ -2,6 +2,8 @@
 
 export(BinCols)
 export(CalcHDI)
+export(CheckLengths)
+export(CheckModelList)
 export(ExtractAccuracy)
 export(ExtractAccuracySD)
 export(ExtractBestPreds)
@@ -16,3 +18,4 @@ export(PlotLEs)
 export(PredictLEs)
 export(PredictNew)
 export(TrainLEs)
+import(data.table)

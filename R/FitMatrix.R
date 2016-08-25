@@ -12,6 +12,9 @@
 
 FitMatrix <- function(preds.matrix, y.values, sample.points = FALSE, ...){
 
+  # make sure columns in preds matrix are equal to length of y.values
+  CheckLengths(seq(ncol(preds.matrix)), y.values)
+
   # apply fitting function row wise to every instance in LE predictions
   meta.rows <- apply(preds.matrix, 1, FitInstance, y.values = y.values, ...)
 

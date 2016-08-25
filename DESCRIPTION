@@ -9,12 +9,12 @@ Depends:
 Imports:
     caret,
     PerformanceAnalytics
-Suggests:
-    AppliedPredictiveModeling
 License: GPL
 LazyData: true
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown,
-    gbm
+    gbm,
+    AppliedPredictiveModeling,
+    compiler
 VignetteBuilder: knitr
