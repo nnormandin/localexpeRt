@@ -9,6 +9,9 @@
 
 ExtractModelInfo <- function(model.list){
 
+  # error if model.list is not correct
+  CheckModelList(LE.model.list)
+
   # take raw performance data and make it a data frame
   performance <- lapply(model.list, ExtractPerformance)
   accuracy <- sapply(performance, ExtractAccuracy)

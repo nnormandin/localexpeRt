@@ -11,6 +11,9 @@
 
 PredictLEs <- function(x, LE.model.list){
 
+  # error if model.list is not correct
+  CheckModelList(LE.model.list)
+
   # define function to predict probability and output DOWN prob
   PredictProb <- function(x, model){
     pred <- predict(model, newdata = x, type = 'prob')

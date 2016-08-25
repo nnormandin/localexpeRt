@@ -26,13 +26,21 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
 
   instance.fit <- FitInstance(LE.preds = LE.preds, y.values = y.vals, ...)
 
+  if(verbose == TRUE){
+    cat(paste0('spline fit to LE predictions with ', df, ' degrees of freedom\n'))
+    cat(paste0('\n...mean: ', format(instance.fit$mean, digits = 3),
+               '\n...var: ', format(instance.fit$var, digits = 3),
+               '\n...skewness: ', format(instance.fit$skew, digits = 3),
+               '\n...kurtosis: ', format(instance.fit$kurtosis, digits = 3), "\n"))
+  }
+
   # 3) attach meta features if they are detected in the original model
 
   meta.names <- c('mean', 'var', 'skewness', 'kurtosis')
   for(i in 1:length(meta.names)){
     if(meta.names[i] %in% names(stack.model$trainingData)){
       x1 <- c(LE.preds, instance.fit[meta.names[i]])
-      print(paste('Attaching meta-feature:', meta.names[i]))
+      cat(paste('\nAttaching meta-feature:', meta.names[i], "\n"))
     }
   }
 
@@ -72,7 +80,7 @@ PredictNew <- function(x, LE.model.list, stack.model, y.vals,
     HDI.ids <- which(prob.mass >= HDI.height)
     x0 <- sample.interp[min(HDI.ids)]
     x1 <- sample.interp[max(HDI.ids)]
-    print(paste0("Estimate of y value is ", format(stack.pred, digits = dig),
+    cat(paste0("\n\nEstimate of y value is ", format(stack.pred, digits = dig),
                   " with a ", (cred*100), "% HDI in the interval (",
                  format(x0, digits = dig), ", ", format(x1, digits = dig), ")"  ))
 

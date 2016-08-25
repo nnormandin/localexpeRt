@@ -117,7 +117,37 @@ CalcHDI <- function(sample.points, epdf, cred = 0.90){
   return(out)
 }
 
+#' Check model.list object
+#'
+#' Ensures model.list object contains all `train` objects
+#' @param model.list
+#' @keywords model
+#' @export
 
+CheckModelList <- function(model.list){
+
+  if(is.list(model.list) != TRUE){
+    stop('The model.list object is not a list')
+  }
+
+  n.train <- sum((sapply(model.list, function(x)
+    class(x) == 'train')))
+  if(n.train != length(model.list)){
+    stop('The model.list object contains objects that are not models')
+  }
+  }
+
+  prob.mass <- epdf/sum(epdf)
+  sorted.mass <- sort(prob.mass, decreasing = TRUE)
+  HDI.height.id <- min(which(cumsum(sorted.mass) >= cred))
+  HDI.height <- sorted.mass[HDI.height.id]
+  HDI.mass <- sum(prob.mass[prob.mass >= HDI.height])
+  HDI.ids <- which(prob.mass >= HDI.height)
+  x0 <- sample.points[min(HDI.ids)]
+  x1 <- sample.points[max(HDI.ids)]
+  out <- list(interval = c(x0, x1))
+  return(out)
+}
 # function to calculate variable importance- TODO: validate VARIMP capability of base learner
 # ExtractVarImp <- function(model){
 #  importance <- varImp(model)$importance$Overall
