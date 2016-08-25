@@ -123,11 +123,14 @@ abline(v = y.cols$y.vals)
 
 #### Train local experts
 
+Once break points are established, the local expert learning models associated with each of them must be trained. Unlike a typical regression task in which a learning model is built to predict the values in the target variable vector $y$, we will induce each learning model on a different target variable vector $y_i$. These vectors are currently stored in the data frame stored within `y.cols$cols` (the output of the `BinCols()` function).
 
+When training the local experts, we use the `TrainLEs()` function from this package. The two required arguments to this function are the feature matrix and the binary target variable matrix. The most important optional requirement is the `method` parameter, which defaults to linear discriminant analysis (`lda`). You can also specify your own `trainControl` object for controlling model creation (although a default one is used if the user does not specify), the number of repeats to use in cross-validating each model in the ensemble, whether to enable just-in-time compilation, and which optimization metric to use.
 
-```{r, fig.width = 6, fig.align = 'center'}
+For this example, we will use gradient boosting trees (`gbm`) as the method and leave all other parameters as their default values. In order to quickly examine the 
+
+```{r, fig.width = 6, fig.align = 'center', eval = FALSE}
 # train Local Experts on each of the binary columns
-# use default train control object with Support Vector Machines algorithm and linear kernel
 model.list <- TrainLEs(x, y.cols$cols, method = 'gbm')
 
 # examine ensemble performance by extracting all model info
@@ -140,10 +143,9 @@ PlotLEs(model.info)
 
 #### Smooth prediction distributions
 
-```{r}
+```{r, eval = FALSE}
 # examine the fit of a random instance
-instance.id <- sample(seq(1, nrow(model.info$preds.matrix)),1)
-instance.check <- FitInstance(model.info$preds.matrix[instance.id,],
+instance.check <- FitInstance(model.info$preds.matrix[sample(seq(1, nrow(model.info$preds.matrix)),1),],
                               y.values = y.cols$y.vals, plot = TRUE)
 
 # fit every instance
@@ -156,7 +158,7 @@ LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
 
 #### Create stacking input data frame
 
-```{r}
+```{r ,eval = FALSE}
 # create meta feature input matrix for stacked regression model
 meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean))
 meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
@@ -166,7 +168,7 @@ colnames(meta.x) <- cnames
 
 #### Build a stacked model
 
-```{r}
+```{r ,eval = FALSE}
 # test a regression model
 # create train control object
 trControl <- trainControl(method = "cv", number = 10,
@@ -183,7 +185,7 @@ L1.model <- train(x = meta.x, y = y, method = 'gbm', trControl = trControl)
 
 #### The long way
 
-```{r}
+```{r ,eval = FALSE}
 
 # receive new data, pick a random row to predict
 x.new <- solTestXtrans[sample(seq(solTestXtrans),1),]
@@ -204,7 +206,7 @@ y.new <- predict(L1.model, newdata = t(x1))
 
 #### The short way
 
-```{r}
+```{r ,eval = FALSE}
 
 # receive new data, pick a random row to predict
 x.new <- solTestXtrans[sample(seq(solTestXtrans),1),]
@@ -215,7 +217,7 @@ y.new <- PredictNew(x = x.new, LE.model.list = model.list, stack.model = L1.mode
 ```
 
 
-
+cases when you would not use the short way- custom meta features (included from original model, etc..), you want to build your own plots
 
 
 

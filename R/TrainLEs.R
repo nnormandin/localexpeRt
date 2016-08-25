@@ -21,7 +21,7 @@ TrainLEs <- function(x, bincols, trControl = NULL,
                      ...){
 
   # enable just-in-time compilation
-  if(JIT = TRUE){
+  if(JIT == TRUE){
     enableJIT(3)
     on.exit(enableJIT(0))
   }
