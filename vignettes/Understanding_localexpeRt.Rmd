@@ -120,7 +120,7 @@ The decision of `n` (the number of columns/models to use) and EP vs EW binning m
 
 ```{r} 
 # convert the response into binary columns
-y.cols <- BinCols(y, n = 10, mode = 'EW')
+y.cols <- BinCols(y, n = 20, mode = 'EW')
 ```
 
 
@@ -141,13 +141,13 @@ abline(v = y.cols$y.vals)
 
 #### Train local experts
 
-Once break points are established, the local expert learning models associated with each of them must be trained. Unlike a typical regression task in which a learning model is built to predict the values in the target variable vector $y$, we will induce each learning model on a different target variable vector $y_i$. These vectors are currently stored in the data frame stored within `y.cols$cols` (the output of the `BinCols()` function).
+Once break points are established, the local expert learning models associated with each of them must be trained. Unlike a typical regression task in which a learning model is built to predict the values in the target variable vector `y`, we will induce each learning model on a different target variable vector. These vectors are currently stored in the data frame stored within `y.cols$cols` (the output of the `BinCols()` function).
 
 When training the local experts, we use the `TrainLEs()` function from this package. The two required arguments to this function are the feature matrix and the binary target variable matrix. The most important optional requirement is the `method` parameter, which defaults to linear discriminant analysis (`lda`). You can also specify your own `trainControl` object for controlling model creation (although a default one is used if the user does not specify), the number of repeats to use in cross-validating each model in the ensemble, whether to enable just-in-time compilation, and which optimization metric to use.
 
 For this example, we will use gradient boosting trees (`gbm`) as the method and leave all other parameters as their default values. The `TrainLEs` function stores a list of `train` objects, which are complex structures with a lot of information. We can extract some very useful information from those objects (performance metrics, predictions from k-fold cross validation) using the `ExtractModelInfo` function, and then quickly get both a visual and descriptive summary of that information using the `PlotLEs` function.
 
-```{r, fig.width=6.5, fig.align = 'center'}
+```{r, fig.width=4,, fig.height=4, fig.align = 'center'}
 # train Local Experts on each of the binary columns
 model.list <- TrainLEs(x, y.cols$cols, method = 'gbm', n.folds = 5,
                        verbose = FALSE)
@@ -159,7 +159,7 @@ model.info <- ExtractModelInfo(model.list)
 PlotLEs(model.info)
 ```
 
-Note that the generation of the local expert model list is the most computationally intensive portion of this methodology, and can take several hours depending (even on modern hardware). The length of time is dependent on the:
+Note that the generation of the local expert model list is the most computationally intensive portion of this methodology, and can take several hours (even on modern hardware). The length of time is dependent on the:
 
   * method chosen
   * number of folds used in cross validation
@@ -177,13 +177,13 @@ Assuming we are happy with the performance of the local experts trained in the p
   2. generate an estimate of the PDF through differentiation of the smoothed CDF using finite difference approximation
   3. calculate the moments of the distribution implied by the PDF
 
-These steps are included in the `FitInstance` function, which takes as arguments a vector of local expert predictions (in the interval $[0,1]$) and the break point values for the target variable determined using the `BinCols` function. The value returned by this function is a list containing all moments of the distribution, a list representing the PDF, a list representing the CDF, and a list of sample points used for plotting purposes. We will start by testing this on a single row to ensure that the curve resemble a PDF.
+These steps are included in the `FitInstance` function, which takes as arguments a vector of local expert predictions (in the interval [0,1]) and the break point values for the target variable determined using the `BinCols` function. The value returned by this function is a list containing all moments of the distribution, a list representing the PDF, a list representing the CDF, and a list of sample points used for plotting purposes. We will start by testing this on a single row to ensure that the curve resemble a PDF.
 
 ```{r, echo = FALSE}
 set.seed(69) #lol 69
 ```
 
-```{r, fig.width=6.5, fig.align = 'center'}
+```{r, fig.width=4, fig.height=4, fig.align = 'center'}
 # examine the fit of a random instance
 instance.check <- FitInstance(model.info$preds.matrix[sample(seq(1, nrow(model.info$preds.matrix)),1),],
                               y.values = y.cols$y.vals, plot = TRUE)
@@ -231,7 +231,7 @@ Now we can build a stacked model, which will take our `meta.x` data frame object
 ```{r}
 # test a regression model
 # create train control object
-trControl <- trainControl(method = "cv", number = 10,
+trControl <- trainControl(method = "cv", number = 20,
                           returnData = TRUE,
                           savePredictions = TRUE)
 
@@ -291,13 +291,55 @@ names(x1)[length(x1)] <- 'mean'
 y.hat <- predict(L1.model, newdata = t(x1))
 ```
 
+## Proof of concept
 
+We can determine experimentally whether or not the distrubtions generated from the local expert probabilistic class estimations were of any value. Logically, we should expect to see a few things:
 
+  * the mean of the distribution should be correlated with the actual y value
+  * there should be a positive linear correlation between the distribution variance and the absolute error
 
+Let's take a look at a plot of the distribution mean against the actual target variable values.
 
+```{r, fig.width=6.5, fig.align = 'center'}
+plot(x = LE.fits$mean, y = y, ylab = 'y', xlab = 'distribution mean')
+```
 
+This is a fairly compelling linear relationship, despite some inaccuracy in the left tail (which might be remedied by either higher local expert density or by using a different beinning strategy). Next we can take a look at absolute error and the variance of the distribution.
 
+```{r}
 
+# calculate error and absolute error of stacked model
+error <- y - L1.model$finalModel$fit
+abs.error <- abs(error)
+
+# calculate standard devation, fit regression line
+dist.stdev <- sqrt(LE.fits$var)
+abs.error.fit <- lm(abs.error ~ dist.stdev)
+summary(abs.error.fit)
+```
+
+It is clear that the the relationship is imperfect (which we expected), but the p-value is undeniable evidence of a relationship. We can visualize that relationship by plotting these vectors against one another.
+
+```{r, fig.width=6.5, fig.align = 'center'}
+# plot scatter and regression line
+plot(y = abs.error, x = dist.stdev, xlab = 'distribution standard deviation',
+     ylab = 'absolute error of stacked model')
+abline(abs.error.fit)
+```
+
+Finally, if the stacked generalization phase of this methodology is worthwhile, we should expect to see a decrease in predictive error.
+
+```{r}
+# calculate distribution's mean absolute deviation
+distribution.mad <- mean(abs(y - LE.fits$mean))
+distribution.mad
+
+# calculate stacked model mean absolute deviation
+stacked.mad <- mean(abs.error)
+stacked.mad
+```
+
+Note that these are resampling error calculations rather than an out-of-sample test, so the results are not robust. However, they provide a compelling suggestion for further research and development of the technique.
 
 
 
