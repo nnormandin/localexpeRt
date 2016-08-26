@@ -4,7 +4,7 @@
 \alias{TrainLEs}
 \title{Train Local Experts}
 \usage{
-TrainLEs(x, bincols, trControl = NULL, method = "lda", n.repeats = 5,
+TrainLEs(x, bincols, trControl = NULL, method = "lda", n.folds = 5,
   metric = "Kappa", JIT = FALSE, ...)
 }
 \arguments{
@@ -16,7 +16,7 @@ TrainLEs(x, bincols, trControl = NULL, method = "lda", n.repeats = 5,
 
 \item{method}{Type of learning algorithm used for induction- defaults to lda}
 
-\item{n.repeats}{Number of repeats if default train control object is used- defaults to 5}
+\item{n.folds}{Number of folds if default train control object is used- defaults to 5}
 
 \item{metric}{Optimization metric; can be either "Accuracy" or "Kappa"}
 

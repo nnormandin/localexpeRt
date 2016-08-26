@@ -4,12 +4,12 @@ author: "Nick Normandin"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Understanding localexpeRt}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-## Method
+## The method
 
 The method implemented in this package is for use in machine learning tasks involving the prediction of a continuous variable. While there are many choices available for regression algorithms, Binary Local Expert Regression is novel in a few ways:
 
@@ -18,15 +18,34 @@ The method implemented in this package is for use in machine learning tasks invo
 * the continuous target variable is transformed into many discrete (specifically binary) target variables, decomposing the original problem into many simpler problems
 * local expert predictions are reconstructed to form a unique predicted target variable distribution for each instance
 
-## Data
+#### Main functions
 
-In this example I will use Quantitative Structure-Activity Relationship (QSAR) data from Max Kuhn's `AppliedPredictiveModeling` package. QSAR modeling is used to predict the properties of chemical compounds (eg. to determine feasibility of a compound's medicinal use).
+The `localexpeRt` package consists of functions that simplify the Binary Local Expert Regression procedure. All of the included functions will be explained in this vignette, but here is a short summary of the key functions and their uses:
+
+Function         | Usage
+---------------- | --------------------------------------------------------------------
+BinCols          | Turns continuous target vector into binary matrix
+TrainLEs         | Trains ensemble of local expert models
+ExtractModelInfo | Extracts features from local experts for meta-feature learning
+PlotLEs          | Displays performance metrics from ensemble
+FitInstance      | Fits spline to local expert predictions, extracts moments
+PredictNew       | Uses the complete local expert methodology to predict new instances
+
+
+## The data
+
+In this example we will use Quantitative Structure-Activity Relationship (QSAR) data from Max Kuhn's `AppliedPredictiveModeling` package. QSAR modeling is used to predict the properties of chemical compounds (eg. to determine feasibility of a compound's medicinal use).
+
+```{r, echo = FALSE}
+if(requireNamespace('AppliedPredictiveModeling', quietly = TRUE)){
+  library(AppliedPredictiveModeling)
+}
+```
+
 
 ```{r message = FALSE}
 # load required libraries
-library(AppliedPredictiveModeling)
 library(localexpeRt)
-library(caret)
 library(gbm)
 
 # bring data into environment
@@ -37,7 +56,7 @@ x <- solTrainXtrans
 y <- solTrainY
 ```
 
-The data set consists of 951 instances, each with 228 attributes. You can verify this using:
+The data set consists of 951 instances, each with 228 attributes. We can verify this using:
 
 ```{r}
 dim(x)
@@ -53,7 +72,7 @@ sum(sapply(x, function(x) sum(is.na(x))))
 
 The target variable we are trying to predict is the solubility of a compound. Let's take a look at how it is distributed in our 951 instances.
 
-```{r, fig.width=6, fig.align = 'center'}
+```{r, fig.width=6.5, fig.align = 'center'}
 hist(y, main = '', xlab = 'Solubility', breaks = 40,
      border = NA, col = rgb(0, 0.2, 0.2, 0.2))
 ```
@@ -66,7 +85,7 @@ The `train` function is used to fit models to data. We'll specify a linear model
 
 ```{r, message=FALSE, warning=FALSE}
 # train a linear model
-linear.model <- train(x, y, method = 'lm')
+linear.model <- caret::train(x, y, method = 'lm')
 
 # check model performance
 linear.model$results$Rsquared
@@ -81,16 +100,16 @@ Note that this is roughly equivalent to the very common `lm(y ~ x)`, but allows 
 Applying the `localexpeRt` method to this data set involves considerably more steps. The added accuracy and distributional understanding may not be worth the effort (not to mention the computational cost) in some cases. For example, if:
 
   * A simple model provides a good fit already
-  * Marginally improving model accuracy does not provide a signficant benefit
+  * Marginally improving model accuracy does not provide a significant benefit
   * Developing a deeper understanding of prediction variance is unimportant
 
-In this case, however, we will assume (due to the extraordinary cost of pharmaceutical research) that even a slight increase in predictive accuracy is worth a few extra keystrokes.
+In this case, however, we will assume (due to the extraordinary cost of pharmaceutical research) that even a slight increase in predictive accuracy is worth a few extra keystrokes and a bit of CPU time.
 
 #### Determine break points
 
 The first step in using the local expert method to solve a regression problem is to encode the continuous target variable vector as a binary matrix. Each column in this matrix represents an additional local expert to be trained and included in the ensemble. Including more models/columns increases the granularity of the method. Having too few models will result in poor prediction accuracy, but improvement is not linear with each model addition and eventually there is a negative marginal benefit. While the number of models to include varies between domains, it's safe to use 20-30 in most applications.
 
-We will accomplish the binary encoding using indicator functions with criteria values placed throughout the expected range of the target variable. The two ways of determing the location of these 'break points' within the expected response range are:
+We will accomplish the binary encoding using indicator functions with criteria values placed throughout the expected range of the target variable. The two ways of determining the location of these 'break points' within the expected response range are:
 
   1. Equally Wide (EW) Intervals: break points are placed at equidistant values throughout the expected range of the target. The distance between each break point is calculated using the user-defined total number of models/columns desired. This form of interval designation is equivalent to the bins created when plotting histograms.
   
@@ -101,8 +120,7 @@ The decision of `n` (the number of columns/models to use) and EP vs EW binning m
 
 ```{r} 
 # convert the response into binary columns
-# use equally probable, output 20 columns
-y.cols <- BinCols(y, n = 20, mode = 'EW')
+y.cols <- BinCols(y, n = 10, mode = 'EW')
 ```
 
 
@@ -111,9 +129,9 @@ The `BinCols` function returns a list with two main values:
   1. The `y.vals` object is a list containing the values of the target variable corresponding to the `n` break points
   2. The `cols` object is a data frame consisting of the transformed binary response vectors that are used to train the local expert models
 
-We can look at the histogram of the target variable again, with verticle lines at each of the break points. Each line represents a different local expert function, which will classify instances based on whether their associated target variable value is to the left or right of the associated line.
+We can look at the histogram of the target variable again, with vertical lines at each of the break points. Each line represents a different local expert function, which will classify instances based on whether their associated target variable value is to the left or right of the associated line.
 
-```{r, fig.width = 6, fig.align = 'center'}
+```{r, fig.width=6.5, fig.align = 'center'}
 # examine breakpoints over histogram of response
 hist(y, main = '', xlab = 'Solubility', breaks = 40,
      border = NA, col = rgb(0, 0.2, 0.2, 0.2))
@@ -127,68 +145,137 @@ Once break points are established, the local expert learning models associated w
 
 When training the local experts, we use the `TrainLEs()` function from this package. The two required arguments to this function are the feature matrix and the binary target variable matrix. The most important optional requirement is the `method` parameter, which defaults to linear discriminant analysis (`lda`). You can also specify your own `trainControl` object for controlling model creation (although a default one is used if the user does not specify), the number of repeats to use in cross-validating each model in the ensemble, whether to enable just-in-time compilation, and which optimization metric to use.
 
-For this example, we will use gradient boosting trees (`gbm`) as the method and leave all other parameters as their default values. In order to quickly examine the 
+For this example, we will use gradient boosting trees (`gbm`) as the method and leave all other parameters as their default values. The `TrainLEs` function stores a list of `train` objects, which are complex structures with a lot of information. We can extract some very useful information from those objects (performance metrics, predictions from k-fold cross validation) using the `ExtractModelInfo` function, and then quickly get both a visual and descriptive summary of that information using the `PlotLEs` function.
 
-```{r, fig.width = 6, fig.align = 'center', eval = FALSE}
+```{r, fig.width=6.5, fig.align = 'center'}
 # train Local Experts on each of the binary columns
-model.list <- TrainLEs(x, y.cols$cols, method = 'gbm')
+model.list <- TrainLEs(x, y.cols$cols, method = 'gbm', n.folds = 5,
+                       verbose = FALSE)
 
 # examine ensemble performance by extracting all model info
 model.info <- ExtractModelInfo(model.list)
 
 # plot the model information
 PlotLEs(model.info)
-
 ```
+
+Note that the generation of the local expert model list is the most computationally intensive portion of this methodology, and can take several hours depending (even on modern hardware). The length of time is dependent on the:
+
+  * method chosen
+  * number of folds used in cross validation
+  * number of training repetitions
+  * number of tuning parameters
+  * tune length
+  
+While the ensemble training is the most time consuming step, it is also likely the most important. The success of this method depends on having high accuracy and kappa values across all local experts, so taking the time to compare different model families, pre-processing options, and tuning parameters is critical.
 
 #### Smooth prediction distributions
 
-```{r, eval = FALSE}
+Assuming we are happy with the performance of the local experts trained in the previous section, the next step is to smooth our output and calculate the moments of the empirical distributions that we have created. The general steps are to:
+
+  1. fit a smoothing spline to our local expert predictions for each training instance (these should resemble an empirical CDF)
+  2. generate an estimate of the PDF through differentiation of the smoothed CDF using finite difference approximation
+  3. calculate the moments of the distribution implied by the PDF
+
+These steps are included in the `FitInstance` function, which takes as arguments a vector of local expert predictions (in the interval $[0,1]$) and the break point values for the target variable determined using the `BinCols` function. The value returned by this function is a list containing all moments of the distribution, a list representing the PDF, a list representing the CDF, and a list of sample points used for plotting purposes. We will start by testing this on a single row to ensure that the curve resemble a PDF.
+
+```{r, echo = FALSE}
+set.seed(69) #lol 69
+```
+
+```{r, fig.width=6.5, fig.align = 'center'}
 # examine the fit of a random instance
 instance.check <- FitInstance(model.info$preds.matrix[sample(seq(1, nrow(model.info$preds.matrix)),1),],
                               y.values = y.cols$y.vals, plot = TRUE)
 
+# observe the mean of the distribution
+instance.check$mean
+```
+
+Now that we are satisfied with the shape of this approximation, we can call the `FitMatrix` function to efficiently fit every row of local expert predictions (which we extracted using the `ExtractModelInfo` function).
+
+```{r}
 # fit every instance
 LE.fits <- FitMatrix(model.info$preds.matrix, y.cols$y.vals)
 ```
 
-
+The object returned from this function contains the mean, variance, skewness, and kurtosis of each instance in the original feature matrix (`x`).
 
 ## Building a stacked regression model
 
+The next step is to build a model on top of the predictions of the local expert ensemble. The concept of using model output as the input to an additional model 'layer' is called stacked generalization. Although we already have some really useful tools (a full distribution and mean for each of our training instances), we can reap additional benefit from the stacked regression model that we train on top of this information.
+
 #### Create stacking input data frame
 
-```{r ,eval = FALSE}
-# create meta feature input matrix for stacked regression model
+The first step is to create an input data frame. We can attach any of the distribution moments we calculated with the `FitMatrix` function in the previous section, but the mean will likely be the only one of significant importance for model training purposes. Let's attach all of the mean values as an extra column next to the matrix of local expert probability predictions.
+
+```{r}
+
+# bind prediction matrix and mean column as a data frame object
 meta.x <- as.data.frame(cbind(model.info$preds.matrix, LE.fits$mean))
+
+# ensure that all columns are stored as numeric vectors
 meta.x <- do.call(cbind, lapply(meta.x, as.numeric))
+
+# rename the columns
 cnames <- c(paste0('c', seq(1, ncol(meta.x)-1)), 'mean')
 colnames(meta.x) <- cnames
 ```
 
+Our `meta.x` data frame should now contain a row for each instance in the original training feature matrix `x`, a column for each of our local experts, and an additional column for the mean of the PDF corresponding to each row.
+
 #### Build a stacked model
 
-```{r ,eval = FALSE}
+Now we can build a stacked model, which will take our `meta.x` data frame object as our feature matrix and be induced on the original continuous target vector `y`. Our first step will be to create a `trainControl` object to make sure we are doing 10-fold cross validation. _It is critical that you leave the_ `returnData` _parameter set to the default value of_ `TRUE`. The reason will be explained in the following section.
+
+```{r}
 # test a regression model
 # create train control object
 trControl <- trainControl(method = "cv", number = 10,
                           returnData = TRUE,
                           savePredictions = TRUE)
 
-# create stacked model
-L1.model <- train(x = meta.x, y = y, method = 'gbm', trControl = trControl)
+# create stacked model (using gradient boosting again for simplicity)
+L1.model <- train(x = meta.x, y = y, method = 'gbm',
+                  verbose = FALSE, trControl = trControl)
 ```
 
 
 ## Using the ensemble
 
+We have now completed all of our steps in building our ensemble, and can now start to use it in practice. Let's pick an instance from the test set of the data we were using at random.
+
+```{r, echo = FALSE}
+set.seed(69696969) # lolol
+```
+
+
+```{r}
+# pick a random index
+idx <- sample(seq(solTestXtrans), 1)
+
+# select the feature vector and target value according to the index
+x.new <- solTestXtrans[idx,]
+y.new <- solTestY[idx]
+```
+
+I will next describe two ways of using this methodology for predictive analytics.
+
+#### The short way
+
+The quickest way to apply this method is to use the `PredictNew` function. It will automatically detect the addition of meta-features like mean, variance, skewness, and kurtosis, and append them to the feature vector automatically. Selecting `TRUE` for the plotting option will cause the function to display a plot of the PDF, smoothed CDF, and local expert predictions prior to smoothing. The plot also has a gray area indicating the credibile interval specified by the `cred` parameter, and vertical lines at the values of the distribution mean and the stacked prediction.
+
+```{r, fig.width = 6.5, fig.height = 4, fig.align = 'center'}
+# predict y.hat
+y.hat <- PredictNew(x = x.new, LE.model.list = model.list, stack.model = L1.model,
+                    y.vals = y.cols$y.vals, plot = TRUE, cred = 0.5)
+```
 
 #### The long way
 
-```{r ,eval = FALSE}
+There are a few reasons for wanting to accomplish the steps from the `PredictNew` function manually. You might want to include custom meta-features (some attributes from the orignal feature vector, a differnet encoding of the local expert predictions, etc..) or you may just want to have control over building your own plots. The outcome is identical, but the steps are outlined here. Note that the `PredictLEs` function is included for convenience, but is basically similar to wrapping the `predict` function within an `sapply`. 
 
-# receive new data, pick a random row to predict
-x.new <- solTestXtrans[sample(seq(solTestXtrans),1),]
+```{r, fig.width=6.5, fig.align = 'center'}
 
 # pass through local expert ensemble
 x.new.LEs <- PredictLEs(x.new, model.list)
@@ -200,30 +287,9 @@ x.new.fit <- FitInstance(x.new.LEs, y.cols$y.vals, plot = TRUE)
 x1 <- c(x.new.LEs, x.new.fit$mean)
 names(x1)[length(x1)] <- 'mean'
 
-y.new <- predict(L1.model, newdata = t(x1))
+# predict y.hat
+y.hat <- predict(L1.model, newdata = t(x1))
 ```
-
-
-#### The short way
-
-```{r ,eval = FALSE}
-
-# receive new data, pick a random row to predict
-x.new <- solTestXtrans[sample(seq(solTestXtrans),1),]
-
-y.new <- PredictNew(x = x.new, LE.model.list = model.list, stack.model = L1.model,
-                    y.vals = y.cols$y.vals, plot = TRUE, cred = 0.5)
-
-```
-
-
-cases when you would not use the short way- custom meta features (included from original model, etc..), you want to build your own plots
-
-
-
-
- 
-
 
 
 

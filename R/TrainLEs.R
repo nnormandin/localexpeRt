@@ -4,7 +4,7 @@
 #' @param x The feature matrix
 #' @param bincols Binary target matrix created with 'BinCols()' function
 #' @param trControl Optional argument to specify a train control object- defaults to cross validated
-#' @param n.repeats Number of repeats if default train control object is used- defaults to 5
+#' @param n.folds Number of folds if default train control object is used- defaults to 5
 #' @param method Type of learning algorithm used for induction- defaults to lda
 #' @param metric Optimization metric; can be either "Accuracy" or "Kappa"
 #' @param JIT Whether or not just-in-time compilation is enabled
@@ -16,7 +16,7 @@
 
 TrainLEs <- function(x, bincols, trControl = NULL,
                      method = "lda",
-                     n.repeats = 5,
+                     n.folds = 5,
                      metric = "Kappa",
                      JIT = FALSE,
                      ...){
@@ -29,7 +29,7 @@ TrainLEs <- function(x, bincols, trControl = NULL,
 
   # default train control function if one is not specified
   if(is.null(trControl)){
-    trControl <- caret::trainControl(method = "cv", number = n.repeats,
+    trControl <- caret::trainControl(method = "cv", number = n.folds,
                                returnData = FALSE,
                                savePredictions = TRUE,
                                classProbs = TRUE)}
