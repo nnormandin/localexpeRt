@@ -34,6 +34,11 @@ TrainLEs <- function(x, bincols, trControl = NULL,
                                savePredictions = TRUE,
                                classProbs = TRUE)}
 
+  # make sure it's cross validated w/ n.folds > 1
+  if(trControl$method != "cv" || trControl$number < 2){
+    stop('Training method must be cross-validation with at least 2 folds')
+  }
+
   # start timer
   t.0 = proc.time()
 
