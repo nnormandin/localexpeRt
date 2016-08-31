@@ -1,13 +1,15 @@
-#' Fit a matrix of LE predictions
+#' Fit a curve to a matrix of local expert predictions
 #'
-#' Fit a curve and calculate moments for all rows in a matrix of LE predictions
-#' @param preds.matrix Matrix of LE predictions from ExtractModelInfo function
-#' @param y.values Y-values from BinCols function
-#' @param sample.points Whether or not to include sample points in output; defaults to false
+#' Fits a curve and calculates moments for all rows in a matrix of LE predictions.
+#'
+#' @param preds.matrix Matrix of LE predictions from
+#' \code{\link{ExtractModelInfo}} function
+#' @param y.values Y-values from \code{\link{BinCols}} function
+#' @param sample.points Whether or not to include sample points in output;
+#' defaults to false
 #' @param ... Additional parameters to be passed to fitting function
-#' @keywords smooth
+#' @return Data frame containing sample points and moments for each instance
 #' @export
-#' @examples
 #'
 
 FitMatrix <- function(preds.matrix, y.values, sample.points = FALSE, ...){

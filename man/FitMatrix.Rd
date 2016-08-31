@@ -2,24 +2,25 @@
 % Please edit documentation in R/FitMatrix.R
 \name{FitMatrix}
 \alias{FitMatrix}
-\title{Fit a matrix of LE predictions}
+\title{Fit a curve to a matrix of local expert predictions}
 \usage{
 FitMatrix(preds.matrix, y.values, sample.points = FALSE, ...)
 }
 \arguments{
-\item{preds.matrix}{Matrix of LE predictions from ExtractModelInfo function}
+\item{preds.matrix}{Matrix of LE predictions from
+\code{\link{ExtractModelInfo}} function}
 
-\item{y.values}{Y-values from BinCols function}
+\item{y.values}{Y-values from \code{\link{BinCols}} function}
 
-\item{sample.points}{Whether or not to include sample points in output; defaults to false}
+\item{sample.points}{Whether or not to include sample points in output;
+defaults to false}
 
 \item{...}{Additional parameters to be passed to fitting function}
 }
+\value{
+Data frame containing sample points and moments for each instance
+}
 \description{
-Fit a curve and calculate moments for all rows in a matrix of LE predictions
+Fits a curve and calculates moments for all rows in a matrix of LE predictions.
 }
-\examples{
-
-}
-\keyword{smooth}
 

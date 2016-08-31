@@ -1,18 +1,20 @@
 #' Predict response of new instance using local expert ensemble with stacking
 #'
-#' Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
+#' Generates local expert predictions for a new feature vector \code{x}.
+#'
 #' @param x Attribute vector of new instance to be predicted
-#' @param LE.model.list Model list object from TrainLEs function
-#' @keywords predict
+#' @param model.list Model list object from
+#' \code{\link{TrainLEs}} function
+#' @return Returns a vector of probabilies in the [0,1] interval of length equal
+#' to the number of local experts in the model list object.
 #' @export
-#' @examples
 #'
 
 
-PredictLEs <- function(x, LE.model.list){
+PredictLEs <- function(x, model.list){
 
   # error if model.list is not correct
-  CheckModelList(LE.model.list)
+  CheckModelList(model.list)
 
   # define function to predict probability and output DOWN prob
   PredictProb <- function(x, model){
@@ -21,8 +23,8 @@ PredictLEs <- function(x, LE.model.list){
     return(out)
   }
 
-  # pass LE.model.list through sapply() to get all probabilities in vector format
-  LE.preds <- sapply(LE.model.list, PredictProb, x = x)
+  # pass model.list through sapply() to get all probabilities in vector format
+  LE.preds <- sapply(model.list, PredictProb, x = x)
 
   return(LE.preds)
 }

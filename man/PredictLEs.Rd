@@ -4,18 +4,19 @@
 \alias{PredictLEs}
 \title{Predict response of new instance using local expert ensemble with stacking}
 \usage{
-PredictLEs(x, LE.model.list)
+PredictLEs(x, model.list)
 }
 \arguments{
 \item{x}{Attribute vector of new instance to be predicted}
 
-\item{LE.model.list}{Model list object from TrainLEs function}
+\item{model.list}{Model list object from
+\code{\link{TrainLEs}} function}
+}
+\value{
+Returns a vector of probabilies in the [0,1] interval of length equal
+to the number of local experts in the model list object.
 }
 \description{
-Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
+Generates local expert predictions for a new feature vector \code{x}.
 }
-\examples{
-
-}
-\keyword{predict}
 

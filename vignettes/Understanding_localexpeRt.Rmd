@@ -269,7 +269,7 @@ The quickest way to apply this method is to use the `PredictNew` function. It wi
 
 ```{r, fig.width = 6.5, fig.height = 4, fig.align = 'center'}
 # predict y.hat
-y.hat <- PredictNew(x = x.new, LE.model.list = model.list, stack.model = L1.model,
+y.hat <- PredictNew(x = x.new, model.list = model.list, stack.model = L1.model,
                     y.vals = y.cols$y.vals, plot = TRUE, cred = 0.5)
 ```
 

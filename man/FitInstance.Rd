@@ -2,7 +2,7 @@
 % Please edit documentation in R/FitInstance.R
 \name{FitInstance}
 \alias{FitInstance}
-\title{Fit a CDF to a row of local expert predictions}
+\title{Fit a curve to a row of local expert predictions}
 \usage{
 FitInstance(LE.preds, y.values, granularity = 1000, df = 10, plot = FALSE)
 }
@@ -17,11 +17,16 @@ FitInstance(LE.preds, y.values, granularity = 1000, df = 10, plot = FALSE)
 
 \item{plot}{Plot output; defaults to FALSE}
 }
+\value{
+Returns a list containing the empirical PDF, empirical CDF, the sample
+points associated with the distribution shapes, and the moments of the
+smoothed distribution.
+}
 \description{
-Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
+Fits a smoothing spline to local expert predictions, creating a CDF-like
+distribution. The CDF is differentiated, and moments of the PDF are calculated.
 }
 \examples{
 
 }
-\keyword{smooth}
 

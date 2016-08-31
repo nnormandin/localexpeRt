@@ -2,7 +2,7 @@
 #'
 #' Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
 #' @param x Attribute vector of new instance to be predicted
-#' @param LE.model.list Model list object from TrainLEs function
+#' @param model.list Model list object from TrainLEs function
 #' @param stack.model Regression model trained on LE output
 #' @param y.vals Y-values from BinCols function
 #' @param plot Display plot of LE predictions and stack estimate
@@ -15,15 +15,15 @@
 #' @examples
 #'
 
-PredictNew <- function(x, LE.model.list, stack.model, y.vals,
+PredictNew <- function(x, model.list, stack.model, y.vals,
                        plot = FALSE, verbose = FALSE, df = 10, cred, ...){
 
   # make sure the nubmer of models and the number of y.vals are correct
-  CheckLengths(LE.model.list, y.vals)
+  CheckLengths(model.list, y.vals)
 
   # 1) pass x vector through all LEs to get prediction
 
-  LE.preds <- PredictLEs(x, LE.model.list)
+  LE.preds <- PredictLEs(x, model.list)
 
   # 2) input LE prediction vector into FitInstance function
 

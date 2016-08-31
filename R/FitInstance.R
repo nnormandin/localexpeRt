@@ -1,12 +1,16 @@
-#' Fit a CDF to a row of local expert predictions
+#' Fit a curve to a row of local expert predictions
 #'
-#' Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
+#' Fits a smoothing spline to local expert predictions, creating a CDF-like
+#' distribution. The CDF is differentiated, and moments of the PDF are calculated.
+#'
 #' @param LE.preds Vector of LE predictions
 #' @param y.values Y-values from BinCols function
 #' @param granularity Number of interpolation points in fitting; defaults to 100
 #' @param df Degrees of freedom in smoothing spline; defaults to 10
 #' @param plot Plot output; defaults to FALSE
-#' @keywords smooth
+#' @return Returns a list containing the empirical PDF, empirical CDF, the sample
+#' points associated with the distribution shapes, and the moments of the
+#' smoothed distribution.
 #' @export
 #' @examples
 #'
