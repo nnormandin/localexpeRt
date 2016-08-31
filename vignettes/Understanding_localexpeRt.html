@@ -388,7 +388,7 @@ y.new</code></pre></div>
 <h4>The short way</h4>
 <p>The quickest way to apply this method is to use the <code>PredictNew</code> function. It will automatically detect the addition of meta-features like mean, variance, skewness, and kurtosis, and append them to the feature vector automatically. Selecting <code>TRUE</code> for the plotting option will cause the function to display a plot of the PDF, smoothed CDF, and local expert predictions prior to smoothing. The plot also has a gray area indicating the credibile interval specified by the <code>cred</code> parameter, and vertical lines at the values of the distribution mean and the stacked prediction.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># predict y.hat</span>
-y.hat &lt;-<span class="st"> </span><span class="kw">PredictNew</span>(<span class="dt">x =</span> x.new, <span class="dt">LE.model.list =</span> model.list, <span class="dt">stack.model =</span> L1.model,
+y.hat &lt;-<span class="st"> </span><span class="kw">PredictNew</span>(<span class="dt">x =</span> x.new, <span class="dt">model.list =</span> model.list, <span class="dt">stack.model =</span> L1.model,
                     <span class="dt">y.vals =</span> y.cols$y.vals, <span class="dt">plot =</span> <span class="ot">TRUE</span>, <span class="dt">cred =</span> <span class="fl">0.5</span>)</code></pre></div>
 <pre><code>## 
 ## Attaching meta-feature: mean</code></pre>
