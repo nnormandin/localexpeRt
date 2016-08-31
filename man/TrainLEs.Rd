@@ -40,8 +40,4 @@ each column of the binary matrix supplied to the object supplied to the
 kappa value, but accuracy is also available. For the \code{method} argument,
 only classification algorithms can be used (as opposed to regression).
 }
-\examples{
-TrainLEs(x, y.columns, method = 'svmLinear')
-
-}
 

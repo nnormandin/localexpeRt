@@ -21,7 +21,6 @@
 #' dependent on the number of columns in the matrix supplied as the argument to
 #' \code{bincols}
 #' @export
-#' @examples TrainLEs(x, y.columns, method = 'svmLinear')
 #'
 
 TrainLEs <- function(x, bincols, trControl = NULL,

@@ -9,7 +9,6 @@
 #' model (if parameters are tuned).
 #' @import data.table
 #' @export
-#' @examples ExtractModelInfo(neural.net.list)
 
 ExtractModelInfo <- function(model.list){
 

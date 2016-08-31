@@ -12,7 +12,6 @@
 #' points associated with the distribution shapes, and the moments of the
 #' smoothed distribution.
 #' @export
-#' @examples
 #'
 
 

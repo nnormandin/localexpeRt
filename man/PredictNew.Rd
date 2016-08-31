@@ -4,13 +4,13 @@
 \alias{PredictNew}
 \title{Predict response of new instance using local expert ensemble with stacking}
 \usage{
-PredictNew(x, LE.model.list, stack.model, y.vals, plot = FALSE,
+PredictNew(x, model.list, stack.model, y.vals, plot = FALSE,
   verbose = FALSE, df = 10, cred, ...)
 }
 \arguments{
 \item{x}{Attribute vector of new instance to be predicted}
 
-\item{LE.model.list}{Model list object from TrainLEs function}
+\item{model.list}{Model list object from TrainLEs function}
 
 \item{stack.model}{Regression model trained on LE output}
 
@@ -26,11 +26,13 @@ PredictNew(x, LE.model.list, stack.model, y.vals, plot = FALSE,
 
 \item{...}{Additional arguments to pass to the FitInstance function}
 }
+\value{
+Returns a list containing the stack prediction y-value,
+local expert predictions, and associated y-values.
+}
 \description{
-Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
+Takes a new instance feature vector, a local expert model list object,
+a stacking regression model, and the y-values associated with the binary
+columns matrix to generate a prediction and plot.
 }
-\examples{
-
-}
-\keyword{predict}
 

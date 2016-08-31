@@ -1,6 +1,9 @@
 #' Predict response of new instance using local expert ensemble with stacking
 #'
-#' Fits a curve to LE predictions, outputs fitted curve point estimates and distribution moments
+#' Takes a new instance feature vector, a local expert model list object,
+#' a stacking regression model, and the y-values associated with the binary
+#' columns matrix to generate a prediction and plot.
+#'
 #' @param x Attribute vector of new instance to be predicted
 #' @param model.list Model list object from TrainLEs function
 #' @param stack.model Regression model trained on LE output
@@ -10,9 +13,9 @@
 #' @param df Degrees of freedom to pass spline if plotting
 #' @param cred Credibility interval for HDI in plot
 #' @param ... Additional arguments to pass to the FitInstance function
-#' @keywords predict
+#' @return Returns a list containing the stack prediction y-value,
+#' local expert predictions, and associated y-values.
 #' @export
-#' @examples
 #'
 
 PredictNew <- function(x, model.list, stack.model, y.vals,

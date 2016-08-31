@@ -9,7 +9,6 @@
 #' @param model.info A model information object created using the
 #' \code{\link{ExtractModelInfo}} function
 #' @export
-#' @examples PlotLEs(model.info.object)
 #'
 
 

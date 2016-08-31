@@ -16,8 +16,4 @@ method configuration for a local expert list by plotting the average
 accuracy and kappa values from the resamples of local experts, in addition
 to the standard deviation of these metrics.
 }
-\examples{
-PlotLEs(model.info.object)
-
-}
 

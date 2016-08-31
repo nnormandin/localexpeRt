@@ -26,7 +26,4 @@ smoothed distribution.
 Fits a smoothing spline to local expert predictions, creating a CDF-like
 distribution. The CDF is differentiated, and moments of the PDF are calculated.
 }
-\examples{
-
-}
 
