@@ -1,19 +1,29 @@
 #' Binary columns function
 #'
-#' This function transforms a continuous target vector into a series of binary target vectors
+#' This function takes a continuous target vector (ie. the `y` vector in regression)
+#' and generates a matrix of binary target vectors.
+#'
+#' The options for \code{mode} are for equally probable bin sizes ('EP') and
+#' equal width bins ('EW') in terms of the values of the target variable. The
+#' parameter \code{n} corresponds to the number of models that will be in the final
+#' local expert ensemble.
+#'
 #' @param y The column to be binarized
 #' @param n The number of columns in the resulting binary matrix
 #' @param mode Defaults to 'EW' intervals, but 'EP' is also available
 #' @param EW.buffer Defaults to 0.01, only for EW testing; excludes outliers from width
+#' @return A matrix of width equal to \code{n} and height equal to \code{length(y)}
 #' @keywords binary
 #' @export
 #' @examples
 #' y <- runif(1000, 0, 200)
-#' BinCols(y, n = 15, mode = 'EP')
+#' binary.matrix <- BinCols(y, n = 15, mode = 'EP')
 #'
 
 
-BinCols <- function(y, n = 30, mode = 'EW', EW.buffer = 0.01){
+BinCols <- function(y, n = 30,
+                    mode = 'EW',
+                    EW.buffer = 0.01){
 
   # binarize columns with equal quantiles
   if(mode == 'EP'){
