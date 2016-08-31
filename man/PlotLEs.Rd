@@ -7,13 +7,17 @@
 PlotLEs(model.info)
 }
 \arguments{
-\item{model.info}{A model information object created using the ExtractModelInfo function}
+\item{model.info}{A model information object created using the
+\code{\link{ExtractModelInfo}} function}
 }
 \description{
-This plots the average accuracy and kappa values from the resamples of local experts, in addition to their standard deviation
+This function allows a user to quickly visualize the performance of a tuning /
+method configuration for a local expert list by plotting the average
+accuracy and kappa values from the resamples of local experts, in addition
+to the standard deviation of these metrics.
 }
 \examples{
+PlotLEs(model.info.object)
 
 }
-\keyword{plot}
 
