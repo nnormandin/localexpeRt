@@ -15,3 +15,5 @@ If you have the `devtools` package installed in `R` you can download the (unstab
 ```r
 devtools::install_github('nnormandin/localexpeRt')
 ```
+# Recognition
+This project was partially funded via the Omar N. Bradley Officer Research Fellowship in Mathematics.
