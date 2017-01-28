@@ -180,7 +180,7 @@ Assuming we are happy with the performance of the local experts trained in the p
 These steps are included in the `FitInstance` function, which takes as arguments a vector of local expert predictions (in the interval [0,1]) and the break point values for the target variable determined using the `BinCols` function. The value returned by this function is a list containing all moments of the distribution, a list representing the PDF, a list representing the CDF, and a list of sample points used for plotting purposes. We will start by testing this on a single row to ensure that the curve resemble a PDF.
 
 ```{r, echo = FALSE}
-set.seed(6969) #lol 69
+set.seed(123)
 ```
 
 ```{r, fig.width=4, fig.height=4, fig.align = 'center'}
@@ -246,7 +246,7 @@ L1.model <- train(x = meta.x, y = y, method = 'gbm',
 We have now completed all of the steps in building our ensemble, and can now start to use it in practice. Let's pick an instance from the test set of the data we were using at random.
 
 ```{r, echo = FALSE}
-set.seed(69696969) # lolol
+set.seed(123)
 ```
 
 
